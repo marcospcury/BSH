@@ -1,0 +1,609 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="BitShare.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+  <EntityContainer Name="BitShareStoreContainer">
+    <EntitySet Name="Usuarios" EntityType="BitShare.Store.Usuarios" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Torrents" EntityType="BitShare.Store.Torrents" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ArquivosTorrents" EntityType="BitShare.Store.ArquivosTorrents" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="TorrentSeeds" EntityType="BitShare.Store.TorrentSeeds" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="TorrentLeeches" EntityType="BitShare.Store.TorrentLeeches" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="TokensRegistro" EntityType="BitShare.Store.TokensRegistro" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="DetalheTorrents" EntityType="BitShare.Store.DetalheTorrents" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="EventosAnnounce" EntityType="BitShare.Store.EventosAnnounce" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Clients" EntityType="BitShare.Store.Clients" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="UsuarioTorrent" Association="BitShare.Store.UsuarioTorrent">
+      <End Role="Usuario" EntitySet="Usuarios" />
+      <End Role="Torrent" EntitySet="Torrents" />
+    </AssociationSet>
+    <AssociationSet Name="TorrentArquivoTorrent" Association="BitShare.Store.TorrentArquivoTorrent">
+      <End Role="Torrent" EntitySet="Torrents" />
+      <End Role="ArquivoTorrent" EntitySet="ArquivosTorrents" />
+    </AssociationSet>
+    <AssociationSet Name="TorrentTorrentSeed" Association="BitShare.Store.TorrentTorrentSeed">
+      <End Role="Torrent" EntitySet="Torrents" />
+      <End Role="TorrentSeed" EntitySet="TorrentSeeds" />
+    </AssociationSet>
+    <AssociationSet Name="UsuarioTorrentSeed" Association="BitShare.Store.UsuarioTorrentSeed">
+      <End Role="Usuario" EntitySet="Usuarios" />
+      <End Role="TorrentSeed" EntitySet="TorrentSeeds" />
+    </AssociationSet>
+    <AssociationSet Name="TorrentTorrentLeech" Association="BitShare.Store.TorrentTorrentLeech">
+      <End Role="Torrent" EntitySet="Torrents" />
+      <End Role="TorrentLeech" EntitySet="TorrentLeeches" />
+    </AssociationSet>
+    <AssociationSet Name="UsuarioTorrentLeech" Association="BitShare.Store.UsuarioTorrentLeech">
+      <End Role="Usuario" EntitySet="Usuarios" />
+      <End Role="TorrentLeech" EntitySet="TorrentLeeches" />
+    </AssociationSet>
+    <AssociationSet Name="TorrentDetalheTorrent" Association="BitShare.Store.TorrentDetalheTorrent">
+      <End Role="Torrent" EntitySet="Torrents" />
+      <End Role="DetalheTorrent" EntitySet="DetalheTorrents" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Usuarios">
+    <Key>
+      <PropertyRef Name="IdUsuario" />
+    </Key>
+    <Property Name="IdUsuario" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Nome" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Senha" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Categoria" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="PassKey" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Ratio" Type="float" Nullable="false" />
+    <Property Name="IdUsuarioPadrinho" Type="int" Nullable="false" />
+    <Property Name="Ativo" Type="bit" Nullable="false" />
+    <Property Name="Downloaded" Type="float" Nullable="false" />
+    <Property Name="Uploaded" Type="float" Nullable="false" />
+    <Property Name="DataCadastro" Type="datetime" Nullable="false" />
+    <Property Name="Advertido" Type="bit" Nullable="false" />
+    <Property Name="Email" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Admin" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Torrents">
+    <Key>
+      <PropertyRef Name="IdTorrent" />
+    </Key>
+    <Property Name="IdTorrent" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Nome" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="HashInfo" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Tamanho" Type="float" Nullable="false" />
+    <Property Name="Seeds" Type="int" Nullable="false" />
+    <Property Name="Leechers" Type="int" Nullable="false" />
+    <Property Name="DataLancamento" Type="datetime" Nullable="false" />
+    <Property Name="FreeLeech" Type="bit" Nullable="false" />
+    <Property Name="Ativo" Type="bit" Nullable="false" />
+    <Property Name="PrimeiroSnatch" Type="bit" Nullable="false" />
+    <Property Name="UsuarioLancamento_IdUsuario" Type="int" Nullable="false" />
+    <Property Name="DetalheTorrent_IdDetalheTorrent" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ArquivosTorrents">
+    <Key>
+      <PropertyRef Name="IdArquivoTorrent" />
+    </Key>
+    <Property Name="IdArquivoTorrent" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Nome" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Tamanho" Type="float" Nullable="false" />
+    <Property Name="Torrent_IdTorrent" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="TorrentSeeds">
+    <Key>
+      <PropertyRef Name="IdTorrentSeed" />
+    </Key>
+    <Property Name="IdTorrentSeed" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ClienteTorrent" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Uploaded" Type="float" Nullable="false" />
+    <Property Name="Downloaded" Type="float" Nullable="false" />
+    <Property Name="Torrent_IdTorrent" Type="int" Nullable="false" />
+    <Property Name="Usuario_IdUsuario" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="TorrentLeeches">
+    <Key>
+      <PropertyRef Name="IdTorrentLeech" />
+    </Key>
+    <Property Name="IdTorrentLeech" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ClienteTorrent" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Uploaded" Type="float" Nullable="false" />
+    <Property Name="Downloaded" Type="float" Nullable="false" />
+    <Property Name="Torrent_IdTorrent" Type="int" Nullable="false" />
+    <Property Name="Usuario_IdUsuario" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="TokensRegistro">
+    <Key>
+      <PropertyRef Name="IdTokenRegistro" />
+    </Key>
+    <Property Name="IdTokenRegistro" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Token" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="DataGeracao" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="DetalheTorrents">
+    <Key>
+      <PropertyRef Name="IdDetalheTorrent" />
+    </Key>
+    <Property Name="IdDetalheTorrent" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Descricao" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="EventosAnnounce">
+    <Key>
+      <PropertyRef Name="IdEventoAnnounce" />
+    </Key>
+    <Property Name="IdEventoAnnounce" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="HashInfoTorrent" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="PasskeyUsuario" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Uploaded" Type="float" Nullable="false" />
+    <Property Name="Downloaded" Type="float" Nullable="false" />
+    <Property Name="Evento" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="DataEvento" Type="datetime" Nullable="false" />
+    <Property Name="Processado" Type="bit" Nullable="false" />
+    <Property Name="EnderecoIP" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="PeerID" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Clients">
+    <Key>
+      <PropertyRef Name="IdClient" />
+    </Key>
+    <Property Name="IdClient" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PeerID" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Nome" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <Association Name="UsuarioTorrent">
+    <End Role="Usuario" Type="BitShare.Store.Usuarios" Multiplicity="1" />
+    <End Role="Torrent" Type="BitShare.Store.Torrents" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuario">
+        <PropertyRef Name="IdUsuario" />
+      </Principal>
+      <Dependent Role="Torrent">
+        <PropertyRef Name="UsuarioLancamento_IdUsuario" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="TorrentArquivoTorrent">
+    <End Role="Torrent" Type="BitShare.Store.Torrents" Multiplicity="1" />
+    <End Role="ArquivoTorrent" Type="BitShare.Store.ArquivosTorrents" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Torrent">
+        <PropertyRef Name="IdTorrent" />
+      </Principal>
+      <Dependent Role="ArquivoTorrent">
+        <PropertyRef Name="Torrent_IdTorrent" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="TorrentTorrentSeed">
+    <End Role="Torrent" Type="BitShare.Store.Torrents" Multiplicity="1" />
+    <End Role="TorrentSeed" Type="BitShare.Store.TorrentSeeds" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Torrent">
+        <PropertyRef Name="IdTorrent" />
+      </Principal>
+      <Dependent Role="TorrentSeed">
+        <PropertyRef Name="Torrent_IdTorrent" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="UsuarioTorrentSeed">
+    <End Role="Usuario" Type="BitShare.Store.Usuarios" Multiplicity="1" />
+    <End Role="TorrentSeed" Type="BitShare.Store.TorrentSeeds" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuario">
+        <PropertyRef Name="IdUsuario" />
+      </Principal>
+      <Dependent Role="TorrentSeed">
+        <PropertyRef Name="Usuario_IdUsuario" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="TorrentTorrentLeech">
+    <End Role="Torrent" Type="BitShare.Store.Torrents" Multiplicity="1" />
+    <End Role="TorrentLeech" Type="BitShare.Store.TorrentLeeches" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Torrent">
+        <PropertyRef Name="IdTorrent" />
+      </Principal>
+      <Dependent Role="TorrentLeech">
+        <PropertyRef Name="Torrent_IdTorrent" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="UsuarioTorrentLeech">
+    <End Role="Usuario" Type="BitShare.Store.Usuarios" Multiplicity="1" />
+    <End Role="TorrentLeech" Type="BitShare.Store.TorrentLeeches" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuario">
+        <PropertyRef Name="IdUsuario" />
+      </Principal>
+      <Dependent Role="TorrentLeech">
+        <PropertyRef Name="Usuario_IdUsuario" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="TorrentDetalheTorrent">
+    <End Role="Torrent" Type="BitShare.Store.Torrents" Multiplicity="*" />
+    <End Role="DetalheTorrent" Type="BitShare.Store.DetalheTorrents" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="DetalheTorrent">
+        <PropertyRef Name="IdDetalheTorrent" />
+      </Principal>
+      <Dependent Role="Torrent">
+        <PropertyRef Name="DetalheTorrent_IdDetalheTorrent" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="BitShare" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" >
+        <EntityContainer Name="BitShareContainer" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Usuarios" EntityType="BitShare.Usuario" />
+          <EntitySet Name="Torrents" EntityType="BitShare.Torrent" />
+          <AssociationSet Name="UsuarioTorrent" Association="BitShare.UsuarioTorrent">
+            <End Role="Usuario" EntitySet="Usuarios" />
+            <End Role="Torrent" EntitySet="Torrents" />
+          </AssociationSet>
+          <EntitySet Name="ArquivosTorrents" EntityType="BitShare.ArquivoTorrent" />
+          <AssociationSet Name="TorrentArquivoTorrent" Association="BitShare.TorrentArquivoTorrent">
+            <End Role="Torrent" EntitySet="Torrents" />
+            <End Role="ArquivoTorrent" EntitySet="ArquivosTorrents" />
+          </AssociationSet>
+          <EntitySet Name="TorrentSeeds" EntityType="BitShare.TorrentSeed" />
+          <AssociationSet Name="TorrentTorrentSeed" Association="BitShare.TorrentTorrentSeed">
+            <End Role="Torrent" EntitySet="Torrents" />
+            <End Role="TorrentSeed" EntitySet="TorrentSeeds" />
+          </AssociationSet>
+          <AssociationSet Name="UsuarioTorrentSeed" Association="BitShare.UsuarioTorrentSeed">
+            <End Role="Usuario" EntitySet="Usuarios" />
+            <End Role="TorrentSeed" EntitySet="TorrentSeeds" />
+          </AssociationSet>
+          <EntitySet Name="TorrentLeeches" EntityType="BitShare.TorrentLeech" />
+          <AssociationSet Name="TorrentTorrentLeech" Association="BitShare.TorrentTorrentLeech">
+            <End Role="Torrent" EntitySet="Torrents" />
+            <End Role="TorrentLeech" EntitySet="TorrentLeeches" />
+          </AssociationSet>
+          <AssociationSet Name="UsuarioTorrentLeech" Association="BitShare.UsuarioTorrentLeech">
+            <End Role="Usuario" EntitySet="Usuarios" />
+            <End Role="TorrentLeech" EntitySet="TorrentLeeches" />
+          </AssociationSet>
+          <EntitySet Name="TokensRegistro" EntityType="BitShare.TokenRegistro" />
+          <EntitySet Name="DetalheTorrents" EntityType="BitShare.DetalheTorrent" />
+          <AssociationSet Name="TorrentDetalheTorrent" Association="BitShare.TorrentDetalheTorrent">
+            <End Role="Torrent" EntitySet="Torrents" />
+            <End Role="DetalheTorrent" EntitySet="DetalheTorrents" />
+          </AssociationSet>
+          <EntitySet Name="EventosAnnounce" EntityType="BitShare.EventoAnnounce" />
+          <EntitySet Name="Clients" EntityType="BitShare.Client" />
+        </EntityContainer>
+        <EntityType Name="Usuario">
+          <Key>
+            <PropertyRef Name="IdUsuario" />
+          </Key>
+          <Property Type="Int32" Name="IdUsuario" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="Nome" Nullable="false" />
+          <Property Type="String" Name="Senha" Nullable="false" />
+          <Property Type="String" Name="Categoria" Nullable="false" />
+          <Property Type="String" Name="PassKey" Nullable="false" />
+          <Property Type="Double" Name="Ratio" Nullable="false" />
+          <Property Type="Int32" Name="IdUsuarioPadrinho" Nullable="false" />
+          <Property Type="Boolean" Name="Ativo" Nullable="false" />
+          <Property Type="Double" Name="Downloaded" Nullable="false" />
+          <Property Type="Double" Name="Uploaded" Nullable="false" />
+          <Property Type="DateTime" Name="DataCadastro" Nullable="false" />
+          <Property Type="Boolean" Name="Advertido" Nullable="false" />
+          <Property Type="String" Name="Email" Nullable="false" />
+          <NavigationProperty Name="Torrents" Relationship="BitShare.UsuarioTorrent" FromRole="Usuario" ToRole="Torrent" />
+          <Property Type="Boolean" Name="Admin" Nullable="false" />
+          <NavigationProperty Name="TorrentSeeds" Relationship="BitShare.UsuarioTorrentSeed" FromRole="Usuario" ToRole="TorrentSeed" />
+          <NavigationProperty Name="TorrentLeeches" Relationship="BitShare.UsuarioTorrentLeech" FromRole="Usuario" ToRole="TorrentLeech" />
+        </EntityType>
+        <EntityType Name="Torrent">
+          <Key>
+            <PropertyRef Name="IdTorrent" />
+          </Key>
+          <Property Type="Int32" Name="IdTorrent" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="UsuarioLancamento" Relationship="BitShare.UsuarioTorrent" FromRole="Torrent" ToRole="Usuario" />
+          <Property Type="String" Name="Nome" Nullable="false" />
+          <Property Type="String" Name="HashInfo" Nullable="false" />
+          <Property Type="Double" Name="Tamanho" Nullable="false" />
+          <Property Type="Int32" Name="Seeds" Nullable="false" />
+          <Property Type="Int32" Name="Leechers" Nullable="false" />
+          <NavigationProperty Name="ArquivoTorrents" Relationship="BitShare.TorrentArquivoTorrent" FromRole="Torrent" ToRole="ArquivoTorrent" />
+          <NavigationProperty Name="TorrentSeeds" Relationship="BitShare.TorrentTorrentSeed" FromRole="Torrent" ToRole="TorrentSeed" />
+          <NavigationProperty Name="TorrentLeeches" Relationship="BitShare.TorrentTorrentLeech" FromRole="Torrent" ToRole="TorrentLeech" />
+          <Property Type="DateTime" Name="DataLancamento" Nullable="false" />
+          <Property Type="Boolean" Name="FreeLeech" Nullable="false" />
+          <Property Type="Boolean" Name="Ativo" Nullable="false" />
+          <Property Type="Boolean" Name="PrimeiroSnatch" Nullable="false" />
+          <NavigationProperty Name="DetalheTorrent" Relationship="BitShare.TorrentDetalheTorrent" FromRole="Torrent" ToRole="DetalheTorrent" />
+        </EntityType>
+        <Association Name="UsuarioTorrent">
+          <End Type="BitShare.Usuario" Role="Usuario" Multiplicity="1" />
+          <End Type="BitShare.Torrent" Role="Torrent" Multiplicity="*" />
+        </Association>
+        <EntityType Name="ArquivoTorrent">
+          <Key>
+            <PropertyRef Name="IdArquivoTorrent" />
+          </Key>
+          <Property Type="Int32" Name="IdArquivoTorrent" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Torrent" Relationship="BitShare.TorrentArquivoTorrent" FromRole="ArquivoTorrent" ToRole="Torrent" />
+          <Property Type="String" Name="Nome" Nullable="false" />
+          <Property Type="Double" Name="Tamanho" Nullable="false" />
+        </EntityType>
+        <Association Name="TorrentArquivoTorrent">
+          <End Type="BitShare.Torrent" Role="Torrent" Multiplicity="1" />
+          <End Type="BitShare.ArquivoTorrent" Role="ArquivoTorrent" Multiplicity="*" />
+        </Association>
+        <EntityType Name="TorrentSeed">
+          <Key>
+            <PropertyRef Name="IdTorrentSeed" />
+          </Key>
+          <Property Type="Int32" Name="IdTorrentSeed" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Torrent" Relationship="BitShare.TorrentTorrentSeed" FromRole="TorrentSeed" ToRole="Torrent" />
+          <NavigationProperty Name="Usuario" Relationship="BitShare.UsuarioTorrentSeed" FromRole="TorrentSeed" ToRole="Usuario" />
+          <Property Type="String" Name="ClienteTorrent" Nullable="false" />
+          <Property Type="Double" Name="Uploaded" Nullable="false" />
+          <Property Type="Double" Name="Downloaded" Nullable="false" />
+        </EntityType>
+        <Association Name="TorrentTorrentSeed">
+          <End Type="BitShare.Torrent" Role="Torrent" Multiplicity="1" />
+          <End Type="BitShare.TorrentSeed" Role="TorrentSeed" Multiplicity="*" />
+        </Association>
+        <Association Name="UsuarioTorrentSeed">
+          <End Type="BitShare.Usuario" Role="Usuario" Multiplicity="1" />
+          <End Type="BitShare.TorrentSeed" Role="TorrentSeed" Multiplicity="*" />
+        </Association>
+        <EntityType Name="TorrentLeech">
+          <Key>
+            <PropertyRef Name="IdTorrentLeech" />
+          </Key>
+          <Property Type="Int32" Name="IdTorrentLeech" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Torrent" Relationship="BitShare.TorrentTorrentLeech" FromRole="TorrentLeech" ToRole="Torrent" />
+          <NavigationProperty Name="Usuario" Relationship="BitShare.UsuarioTorrentLeech" FromRole="TorrentLeech" ToRole="Usuario" />
+          <Property Type="String" Name="ClienteTorrent" Nullable="false" />
+          <Property Type="Double" Name="Uploaded" Nullable="false" />
+          <Property Type="Double" Name="Downloaded" Nullable="false" />
+        </EntityType>
+        <Association Name="TorrentTorrentLeech">
+          <End Type="BitShare.Torrent" Role="Torrent" Multiplicity="1" />
+          <End Type="BitShare.TorrentLeech" Role="TorrentLeech" Multiplicity="*" />
+        </Association>
+        <Association Name="UsuarioTorrentLeech">
+          <End Type="BitShare.Usuario" Role="Usuario" Multiplicity="1" />
+          <End Type="BitShare.TorrentLeech" Role="TorrentLeech" Multiplicity="*" />
+        </Association>
+        <EntityType Name="TokenRegistro">
+          <Key>
+            <PropertyRef Name="IdTokenRegistro" />
+          </Key>
+          <Property Type="Int32" Name="IdTokenRegistro" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="Token" Nullable="false" />
+          <Property Type="DateTime" Name="DataGeracao" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DetalheTorrent">
+          <Key>
+            <PropertyRef Name="IdDetalheTorrent" />
+          </Key>
+          <Property Type="Int32" Name="IdDetalheTorrent" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Torrent" Relationship="BitShare.TorrentDetalheTorrent" FromRole="DetalheTorrent" ToRole="Torrent" />
+          <Property Type="String" Name="Descricao" Nullable="false" />
+        </EntityType>
+        <Association Name="TorrentDetalheTorrent">
+          <End Type="BitShare.Torrent" Role="Torrent" Multiplicity="1" />
+          <End Type="BitShare.DetalheTorrent" Role="DetalheTorrent" Multiplicity="1" />
+        </Association>
+        <EntityType Name="EventoAnnounce">
+          <Key>
+            <PropertyRef Name="IdEventoAnnounce" />
+          </Key>
+          <Property Type="Int32" Name="IdEventoAnnounce" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="HashInfoTorrent" Nullable="false" />
+          <Property Type="String" Name="PasskeyUsuario" Nullable="false" />
+          <Property Type="Double" Name="Uploaded" Nullable="false" />
+          <Property Type="Double" Name="Downloaded" Nullable="false" />
+          <Property Type="String" Name="Evento" Nullable="false" />
+          <Property Type="DateTime" Name="DataEvento" Nullable="false" />
+          <Property Type="Boolean" Name="Processado" Nullable="false" />
+          <Property Type="String" Name="EnderecoIP" Nullable="false" />
+          <Property Type="String" Name="PeerID" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Client">
+          <Key>
+            <PropertyRef Name="IdClient" />
+          </Key>
+          <Property Type="Int32" Name="IdClient" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="PeerID" Nullable="false" />
+          <Property Type="String" Name="Nome" Nullable="false" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="BitShareStoreContainer" CdmEntityContainer="BitShareContainer">
+    <EntitySetMapping Name="Usuarios">
+      <EntityTypeMapping TypeName="IsTypeOf(BitShare.Usuario)">
+        <MappingFragment StoreEntitySet="Usuarios">
+          <ScalarProperty Name="IdUsuario" ColumnName="IdUsuario" />
+          <ScalarProperty Name="Nome" ColumnName="Nome" />
+          <ScalarProperty Name="Senha" ColumnName="Senha" />
+          <ScalarProperty Name="Categoria" ColumnName="Categoria" />
+          <ScalarProperty Name="PassKey" ColumnName="PassKey" />
+          <ScalarProperty Name="Ratio" ColumnName="Ratio" />
+          <ScalarProperty Name="IdUsuarioPadrinho" ColumnName="IdUsuarioPadrinho" />
+          <ScalarProperty Name="Ativo" ColumnName="Ativo" />
+          <ScalarProperty Name="Downloaded" ColumnName="Downloaded" />
+          <ScalarProperty Name="Uploaded" ColumnName="Uploaded" />
+          <ScalarProperty Name="DataCadastro" ColumnName="DataCadastro" />
+          <ScalarProperty Name="Advertido" ColumnName="Advertido" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="Admin" ColumnName="Admin" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Torrents">
+      <EntityTypeMapping TypeName="IsTypeOf(BitShare.Torrent)">
+        <MappingFragment StoreEntitySet="Torrents">
+          <ScalarProperty Name="IdTorrent" ColumnName="IdTorrent" />
+          <ScalarProperty Name="Nome" ColumnName="Nome" />
+          <ScalarProperty Name="HashInfo" ColumnName="HashInfo" />
+          <ScalarProperty Name="Tamanho" ColumnName="Tamanho" />
+          <ScalarProperty Name="Seeds" ColumnName="Seeds" />
+          <ScalarProperty Name="Leechers" ColumnName="Leechers" />
+          <ScalarProperty Name="DataLancamento" ColumnName="DataLancamento" />
+          <ScalarProperty Name="FreeLeech" ColumnName="FreeLeech" />
+          <ScalarProperty Name="Ativo" ColumnName="Ativo" />
+          <ScalarProperty Name="PrimeiroSnatch" ColumnName="PrimeiroSnatch" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ArquivosTorrents">
+      <EntityTypeMapping TypeName="IsTypeOf(BitShare.ArquivoTorrent)">
+        <MappingFragment StoreEntitySet="ArquivosTorrents">
+          <ScalarProperty Name="IdArquivoTorrent" ColumnName="IdArquivoTorrent" />
+          <ScalarProperty Name="Nome" ColumnName="Nome" />
+          <ScalarProperty Name="Tamanho" ColumnName="Tamanho" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TorrentSeeds">
+      <EntityTypeMapping TypeName="IsTypeOf(BitShare.TorrentSeed)">
+        <MappingFragment StoreEntitySet="TorrentSeeds">
+          <ScalarProperty Name="IdTorrentSeed" ColumnName="IdTorrentSeed" />
+          <ScalarProperty Name="ClienteTorrent" ColumnName="ClienteTorrent" />
+          <ScalarProperty Name="Uploaded" ColumnName="Uploaded" />
+          <ScalarProperty Name="Downloaded" ColumnName="Downloaded" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TorrentLeeches">
+      <EntityTypeMapping TypeName="IsTypeOf(BitShare.TorrentLeech)">
+        <MappingFragment StoreEntitySet="TorrentLeeches">
+          <ScalarProperty Name="IdTorrentLeech" ColumnName="IdTorrentLeech" />
+          <ScalarProperty Name="ClienteTorrent" ColumnName="ClienteTorrent" />
+          <ScalarProperty Name="Uploaded" ColumnName="Uploaded" />
+          <ScalarProperty Name="Downloaded" ColumnName="Downloaded" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TokensRegistro">
+      <EntityTypeMapping TypeName="IsTypeOf(BitShare.TokenRegistro)">
+        <MappingFragment StoreEntitySet="TokensRegistro">
+          <ScalarProperty Name="IdTokenRegistro" ColumnName="IdTokenRegistro" />
+          <ScalarProperty Name="Token" ColumnName="Token" />
+          <ScalarProperty Name="DataGeracao" ColumnName="DataGeracao" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="DetalheTorrents">
+      <EntityTypeMapping TypeName="IsTypeOf(BitShare.DetalheTorrent)">
+        <MappingFragment StoreEntitySet="DetalheTorrents">
+          <ScalarProperty Name="IdDetalheTorrent" ColumnName="IdDetalheTorrent" />
+          <ScalarProperty Name="Descricao" ColumnName="Descricao" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="EventosAnnounce">
+      <EntityTypeMapping TypeName="IsTypeOf(BitShare.EventoAnnounce)">
+        <MappingFragment StoreEntitySet="EventosAnnounce">
+          <ScalarProperty Name="IdEventoAnnounce" ColumnName="IdEventoAnnounce" />
+          <ScalarProperty Name="HashInfoTorrent" ColumnName="HashInfoTorrent" />
+          <ScalarProperty Name="PasskeyUsuario" ColumnName="PasskeyUsuario" />
+          <ScalarProperty Name="Uploaded" ColumnName="Uploaded" />
+          <ScalarProperty Name="Downloaded" ColumnName="Downloaded" />
+          <ScalarProperty Name="Evento" ColumnName="Evento" />
+          <ScalarProperty Name="DataEvento" ColumnName="DataEvento" />
+          <ScalarProperty Name="Processado" ColumnName="Processado" />
+          <ScalarProperty Name="EnderecoIP" ColumnName="EnderecoIP" />
+          <ScalarProperty Name="PeerID" ColumnName="PeerID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Clients">
+      <EntityTypeMapping TypeName="IsTypeOf(BitShare.Client)">
+        <MappingFragment StoreEntitySet="Clients">
+          <ScalarProperty Name="IdClient" ColumnName="IdClient" />
+          <ScalarProperty Name="PeerID" ColumnName="PeerID" />
+          <ScalarProperty Name="Nome" ColumnName="Nome" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="UsuarioTorrent" TypeName="BitShare.UsuarioTorrent" StoreEntitySet="Torrents">
+      <EndProperty Name="Usuario">
+        <ScalarProperty Name="IdUsuario" ColumnName="UsuarioLancamento_IdUsuario" />
+      </EndProperty>
+      <EndProperty Name="Torrent">
+        <ScalarProperty Name="IdTorrent" ColumnName="IdTorrent" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="TorrentArquivoTorrent" TypeName="BitShare.TorrentArquivoTorrent" StoreEntitySet="ArquivosTorrents">
+      <EndProperty Name="Torrent">
+        <ScalarProperty Name="IdTorrent" ColumnName="Torrent_IdTorrent" />
+      </EndProperty>
+      <EndProperty Name="ArquivoTorrent">
+        <ScalarProperty Name="IdArquivoTorrent" ColumnName="IdArquivoTorrent" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="TorrentTorrentSeed" TypeName="BitShare.TorrentTorrentSeed" StoreEntitySet="TorrentSeeds">
+      <EndProperty Name="Torrent">
+        <ScalarProperty Name="IdTorrent" ColumnName="Torrent_IdTorrent" />
+      </EndProperty>
+      <EndProperty Name="TorrentSeed">
+        <ScalarProperty Name="IdTorrentSeed" ColumnName="IdTorrentSeed" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="UsuarioTorrentSeed" TypeName="BitShare.UsuarioTorrentSeed" StoreEntitySet="TorrentSeeds">
+      <EndProperty Name="Usuario">
+        <ScalarProperty Name="IdUsuario" ColumnName="Usuario_IdUsuario" />
+      </EndProperty>
+      <EndProperty Name="TorrentSeed">
+        <ScalarProperty Name="IdTorrentSeed" ColumnName="IdTorrentSeed" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="TorrentTorrentLeech" TypeName="BitShare.TorrentTorrentLeech" StoreEntitySet="TorrentLeeches">
+      <EndProperty Name="Torrent">
+        <ScalarProperty Name="IdTorrent" ColumnName="Torrent_IdTorrent" />
+      </EndProperty>
+      <EndProperty Name="TorrentLeech">
+        <ScalarProperty Name="IdTorrentLeech" ColumnName="IdTorrentLeech" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="UsuarioTorrentLeech" TypeName="BitShare.UsuarioTorrentLeech" StoreEntitySet="TorrentLeeches">
+      <EndProperty Name="Usuario">
+        <ScalarProperty Name="IdUsuario" ColumnName="Usuario_IdUsuario" />
+      </EndProperty>
+      <EndProperty Name="TorrentLeech">
+        <ScalarProperty Name="IdTorrentLeech" ColumnName="IdTorrentLeech" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="TorrentDetalheTorrent" TypeName="BitShare.TorrentDetalheTorrent" StoreEntitySet="Torrents">
+      <EndProperty Name="DetalheTorrent">
+        <ScalarProperty Name="IdDetalheTorrent" ColumnName="DetalheTorrent_IdDetalheTorrent" />
+      </EndProperty>
+      <EndProperty Name="Torrent">
+        <ScalarProperty Name="IdTorrent" ColumnName="IdTorrent" />
+      </EndProperty>
+    </AssociationSetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

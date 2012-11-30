@@ -1,0 +1,67 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoTorrent", "MonoTorrent\MonoTorrent.csproj", "{411A9E0E-FDC6-4E25-828A-0C2CD1CD96F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoTorrent.Dht", "MonoTorrent.Dht\MonoTorrent.Dht.csproj", "{7A2A7E73-FD43-4171-AA34-DA413D35459E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASPTracker", "ASPTracker\ASPTracker.csproj", "{447B995C-2C7C-453A-B4AB-5E50E6841C43}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitShareData", "BitShareData\BitShareData\BitShareData.csproj", "{01A5AE83-0582-4C46-AD26-7F00CEA80F5F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitShareTest", "BitShareTest\BitShareTest.csproj", "{337C858C-D105-4A14-9AF1-BCDF43CDBE9E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitShareManager", "BitShareManager\BitShareManager.csproj", "{6B1C6AB6-0C96-45BA-977F-430B00BB8878}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{411A9E0E-FDC6-4E25-828A-0C2CD1CD96F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{411A9E0E-FDC6-4E25-828A-0C2CD1CD96F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{411A9E0E-FDC6-4E25-828A-0C2CD1CD96F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{411A9E0E-FDC6-4E25-828A-0C2CD1CD96F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A2A7E73-FD43-4171-AA34-DA413D35459E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A2A7E73-FD43-4171-AA34-DA413D35459E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A2A7E73-FD43-4171-AA34-DA413D35459E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A2A7E73-FD43-4171-AA34-DA413D35459E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{447B995C-2C7C-453A-B4AB-5E50E6841C43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{447B995C-2C7C-453A-B4AB-5E50E6841C43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{447B995C-2C7C-453A-B4AB-5E50E6841C43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{447B995C-2C7C-453A-B4AB-5E50E6841C43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01A5AE83-0582-4C46-AD26-7F00CEA80F5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01A5AE83-0582-4C46-AD26-7F00CEA80F5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01A5AE83-0582-4C46-AD26-7F00CEA80F5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01A5AE83-0582-4C46-AD26-7F00CEA80F5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{337C858C-D105-4A14-9AF1-BCDF43CDBE9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{337C858C-D105-4A14-9AF1-BCDF43CDBE9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{337C858C-D105-4A14-9AF1-BCDF43CDBE9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{337C858C-D105-4A14-9AF1-BCDF43CDBE9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B1C6AB6-0C96-45BA-977F-430B00BB8878}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B1C6AB6-0C96-45BA-977F-430B00BB8878}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B1C6AB6-0C96-45BA-977F-430B00BB8878}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B1C6AB6-0C96-45BA-977F-430B00BB8878}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = SampleClient\SampleClient.csproj
+		Policies = $0
+		$0.TextStylePolicy = $1
+		$1.FileWidth = 120
+		$1.RemoveTrailingWhitespace = True
+		$1.inheritsSet = VisualStudio
+		$1.inheritsScope = text/plain
+		$1.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $2
+		$2.inheritsSet = Mono
+		$2.inheritsScope = text/x-csharp
+		$2.scope = text/x-csharp
+		$0.StandardHeader = $3
+		$3.Text = 
+		$3.inheritsSet = Apache2License
+	EndGlobalSection
+EndGlobal
