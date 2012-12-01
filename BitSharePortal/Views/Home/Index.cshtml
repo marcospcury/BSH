@@ -1,0 +1,250 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<style>
+    #containerNoticias {
+        background-color: white;
+        border: solid;
+        border-color: silver;
+        border-width: thin;
+        width: 600px;
+        margin-top: 5px;
+        margin-left: 5px;
+        margin-bottom: 5px;
+        border-radius: 3px 3px;
+        float: left;
+    }
+
+    #containerStatistics {
+        background-color: white;
+        border: solid;
+        border-color: silver;
+        border-width: thin;
+        width: 290px;
+        margin-left: 5px;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        border-radius: 3px 3px;
+        float: left;
+        text-align: center;
+    }
+
+    #containerDrops {
+        background-color: white;
+        border: solid;
+        border-color: silver;
+        border-width: thin;
+        width: 898px;
+        margin-left: 5px;
+        margin-top: 5px;
+        border-radius: 3px 3px;
+        display: block;
+        clear: both;
+    }
+
+    .padded {
+        padding: 5px 5px 5px 5px;
+        border-radius: 3px 3px;
+    }
+
+    td {
+        padding: 5px 10px 5px 10px;
+        border-width: 0 0 1px 1px;
+        border-spacing: 0;
+        border-collapse: collapse;
+        border-style: solid;
+        border-color: silver;
+    }
+
+    table {
+        border-width: 1px 1px 0 0;
+        border-spacing: 0;
+        border-collapse: collapse;
+        border-style: solid;
+        border-color: silver;
+    }
+
+    .pieceMarker {
+        margin-right: 8px;
+        border-bottom: dotted;
+        border-width: thin;
+        border-bottom-color: silver;
+    }
+
+    .freeLeech {
+        color: blue;
+        font-weight: bold;
+    }
+
+   
+
+    
+</style>
+<script>
+    $(function () {
+
+    });
+</script>
+
+<div id="containerNoticias">
+    <div class="ui-widget-header padded">Novidades</div>
+    <div class="padded">
+        <div class="pieceMarker">
+            <ul>
+                <li>Mussum ipsum cacilds, vidis litro abertis. Consetis adipiscings elitis. Pra lá , depois divoltis porris, paradis. Paisis, filhis, espiritis santis. Mé faiz elementum girarzis, nisi eros vermeio, in elementis mé pra quem é amistosis quis leo. Manduma pindureta quium dia nois paga. Sapien in monti palavris qui num significa nadis i pareci latim. Interessantiss quisso pudia ce receita de bolis, mais bolis eu num gostis.
+                </li>
+            </ul>
+        </div>
+        <div class="pieceMarker">
+            <ul>
+                <li>Mussum ipsum cacilds, vidis litro abertis. Consetis adipiscings elitis. Pra lá , depois divoltis porris, paradis. Paisis, filhis, espiritis santis. Mé faiz elementum girarzis, nisi eros vermeio, in elementis mé pra quem é amistosis quis leo. Manduma pindureta quium dia nois paga. Sapien in monti palavris qui num significa nadis i pareci latim. Interessantiss quisso pudia ce receita de bolis, mais bolis eu num gostis.
+                </li>
+            </ul>
+        </div>
+        <div class="pieceMarker">
+            <ul>
+                <li>Mussum ipsum cacilds, vidis litro abertis. Consetis adipiscings elitis. Pra lá , depois divoltis porris, paradis. Paisis, filhis, espiritis santis. Mé faiz elementum girarzis, nisi eros vermeio, in elementis mé pra quem é amistosis quis leo. Manduma pindureta quium dia nois paga. Sapien in monti palavris qui num significa nadis i pareci latim. Interessantiss quisso pudia ce receita de bolis, mais bolis eu num gostis.
+                </li>
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+<div id="containerStatistics">
+    <div class="ui-widget-header padded">Estatísticas</div>
+    <div class="padded">
+        <table cellspacing="0" style="width: 200px; margin: 10px auto auto auto;">
+            <tr>
+                <td>Usuarios registrados
+                </td>
+                <td>2
+                </td>
+            </tr>
+            <tr>
+                <td>Usuarios online
+                </td>
+                <td>2
+                </td>
+            </tr>
+            <tr>
+                <td>Torrents
+                </td>
+                <td>2.570
+                </td>
+            </tr>
+            <tr>
+                <td>Total baixado
+                </td>
+                <td>100.3 TB
+                </td>
+            </tr>
+            <tr>
+                <td>Peers
+                </td>
+                <td>712398
+                </td>
+            </tr>
+            <tr>
+                <td>Seeders
+                </td>
+                <td>43212
+                </td>
+            </tr>
+            <tr>
+                <td>Leechers
+                </td>
+                <td>345643
+                </td>
+            </tr>
+            <tr>
+                <td>Último usuário
+                </td>
+                <td>JeffHP
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div id="containerDrops">
+    <div class="ui-widget-header padded">Top Torrents</div>
+    <div class="padded">
+        <h2>Mais baixados</h2>
+        <a href="#">
+            <div class="pieceMarker padded">
+                <b>30.Rock.S07E07.PROPER.1080p.WEB-DL.DD5.1.H.264-POD</b>
+                Tamanho: 5.9 GB - Baixado: 235 vezes - Seeds: 39 - Peers: 125
+            </div>
+        </a>
+        <a href="#">
+        <div class="pieceMarker padded">
+            <span class="freeLeech">[FreeLeech]  </span><b>WWE.Friday.Night.Smackdown.2012.11.30.720p.HDTV.x264-KYR</b>
+            Tamanho: 5.9 GB - Baixado: 235 vezes - Seeds: 39 - Peers: 125
+        </div></a>
+         <a href="#">
+        <div class="pieceMarker padded">
+            <b>MAD.S03E06.This.Means.War.Machine iCharlie.1080p.WEB-DL.AAC2.0.H264-NTb</b>
+            Tamanho: 5.9 GB - Baixado: 235 vezes - Seeds: 39 - Peers: 125
+        </div></a>
+              <a href="#">
+        <div class="pieceMarker padded">
+            <b>The.Good.Wife.S04E09.720p.WEB-DL.DD5.1.H.264-NFHD</b>
+            Tamanho: 5.9 GB - Baixado: 235 vezes - Seeds: 39 - Peers: 125
+        </div></a>
+    </div>
+
+     <div class="padded">
+        <h2>Mais seeds</h2>
+        <a href="#">
+            <div class="pieceMarker padded">
+                <b>30.Rock.S07E07.PROPER.1080p.WEB-DL.DD5.1.H.264-POD</b>
+                Tamanho: 5.9 GB - Baixado: 235 vezes - Seeds: 39 - Peers: 125
+            </div>
+        </a>
+        <a href="#">
+        <div class="pieceMarker padded">
+            <span class="freeLeech">[FreeLeech]  </span><b>WWE.Friday.Night.Smackdown.2012.11.30.720p.HDTV.x264-KYR</b>
+            Tamanho: 5.9 GB - Baixado: 235 vezes - Seeds: 39 - Peers: 125
+        </div></a>
+         <a href="#">
+        <div class="pieceMarker padded">
+            <b>MAD.S03E06.This.Means.War.Machine iCharlie.1080p.WEB-DL.AAC2.0.H264-NTb</b>
+            Tamanho: 5.9 GB - Baixado: 235 vezes - Seeds: 39 - Peers: 125
+        </div></a>
+              <a href="#">
+        <div class="pieceMarker padded">
+            <b>The.Good.Wife.S04E09.720p.WEB-DL.DD5.1.H.264-NFHD</b>
+            Tamanho: 5.9 GB - Baixado: 235 vezes - Seeds: 39 - Peers: 125
+        </div></a>
+    </div>
+
+     <div class="padded">
+        <h2>Mais leechers</h2>
+        <a href="#">
+            <div class="pieceMarker padded">
+                <b>30.Rock.S07E07.PROPER.1080p.WEB-DL.DD5.1.H.264-POD</b>
+                Tamanho: 5.9 GB - Baixado: 235 vezes - Seeds: 39 - Peers: 125
+            </div>
+        </a>
+        <a href="#">
+        <div class="pieceMarker padded">
+            <span class="freeLeech">[FreeLeech]  </span><b>WWE.Friday.Night.Smackdown.2012.11.30.720p.HDTV.x264-KYR</b>
+            Tamanho: 5.9 GB - Baixado: 235 vezes - Seeds: 39 - Peers: 125
+        </div></a>
+         <a href="#">
+        <div class="pieceMarker padded">
+            <b>MAD.S03E06.This.Means.War.Machine iCharlie.1080p.WEB-DL.AAC2.0.H264-NTb</b>
+            Tamanho: 5.9 GB - Baixado: 235 vezes - Seeds: 39 - Peers: 125
+        </div></a>
+              <a href="#">
+        <div class="pieceMarker padded">
+            <b>The.Good.Wife.S04E09.720p.WEB-DL.DD5.1.H.264-NFHD</b>
+            Tamanho: 5.9 GB - Baixado: 235 vezes - Seeds: 39 - Peers: 125
+        </div></a>
+    </div>
+
+</div>
+
+
