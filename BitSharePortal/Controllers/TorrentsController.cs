@@ -6,24 +6,32 @@ using System.Web.Mvc;
 
 namespace BitSharePortal.Controllers
 {
-    public class HomeController : Controller
+    public class TorrentsController : Controller
     {
         //
-        // GET: /Home/
+        // GET: /Torrents/
 
         public ActionResult Index()
         {
             return View();
         }
 
-        public ActionResult Regras()
+        public ActionResult Browse()
         {
             return View();
         }
 
-        public ActionResult Contato()
+        public ActionResult Detail()
         {
             return View();
         }
+
+        public ActionResult Upload()
+        {
+            return View();
+        }
+
+
+
     }
 }

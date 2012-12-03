@@ -3,125 +3,9 @@
 <head>
     <title>@ViewBag.Title</title>
     <link href="@Url.Content("~/Content/css/black-tie/jquery-ui-1.9.2.custom.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
     <script src="@Url.Content("~/Content/js/jquery-1.8.3.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Content/js/jquery-ui-1.9.2.custom.js")" type="text/javascript"></script>
-
-    <style>
-        body {
-            font: 72.5% "Trebuchet MS", sans-serif;
-            margin: 15px;
-            background-image: url("../Content/Images/steel_honeycomb.jpg");
-            background-color: #404040;
-            text-align: left;
-        }
-
-        p {
-            font: 110% "Trebuchet MS", sans-serif;
-        }
-
-        a:link, a:visited {
-            text-decoration: none;
-            color: #000;
-        }
-
-        a:hover {
-            text-decoration: underline;
-            color: #f00;
-        }
-
-        a:active {
-            text-decoration: none;
-        }
-
-        .demoHeaders {
-            margin-top: 2em;
-        }
-
-        #dialog-link {
-            padding: .4em 1em .4em 20px;
-            text-decoration: none;
-            position: relative;
-        }
-
-            #dialog-link span.ui-icon {
-                margin: 0 5px 0 0;
-                position: absolute;
-                left: .2em;
-                top: 50%;
-                margin-top: -8px;
-            }
-
-        #icons {
-            margin: 0;
-            padding: 0;
-        }
-
-            #icons li {
-                margin: 2px;
-                position: relative;
-                padding: 4px 0;
-                cursor: pointer;
-                float: left;
-                list-style: none;
-            }
-
-            #icons span.ui-icon {
-                float: left;
-                margin: 0 4px;
-            }
-
-        #headerBanner {
-            border-bottom: solid;
-            background-image: url("../Content/Images/spiderweb.jpg");
-            border-bottom-style: groove;
-            border-width: thin;
-            margin-left: 5px;
-            margin-right: 5px;
-            text-align: center;
-            height: 100px;
-        }
-
-        #headerMenu {
-            border-bottom: solid;
-            border-bottom-style: groove;
-            border-width: thin;
-            margin-left: 5px;
-            margin-right: 5px;
-            text-align: center;
-            background-color: black;
-        }
-
-        #userDataStrip {
-            margin-top: 5px;
-            margin-left: 5px;
-            margin-right: 5px;
-            border-bottom: solid;
-            border-bottom-width: thin;
-            border-bottom-color: silver;
-        }
-
-        #mainContainer {
-            text-align: left;
-            background-color: white;
-            border: solid;
-            border-style: groove;
-            border-width: thin;
-            width: 910px;
-            margin-left: auto;
-            margin-right: auto;
-            -moz-box-shadow: 0 0 20px 5px #333;
-            -webkit-box-shadow: 0 0 20px 5px #333;
-            box-shadow: 0 0 10px 2px #333;
-            z-index: 25;
-        }
-
-        .buttonMenuMain {
-            width: 124px;
-            border-radius: 0px 0px;
-            font-weight: bold;
-            font-size: 10px;
-        }
-    </style>
     <script>
         $(function () {
             $("button").button();
@@ -133,16 +17,22 @@
         <div id="headerBanner">
         </div>
         <div id="headerMenu">
-            <button class="buttonMenuMain">Home</button>
-            <button class="buttonMenuMain">Torrents</button>
-            <button class="buttonMenuMain">Upload</button>
+            <a href="/Home"><button class="buttonMenuMain">Home</button></a>
+            <a href="/Torrents/Browse"><button class="buttonMenuMain">Torrents</button></a>
+            <a href="/Torrents/Upload"><button class="buttonMenuMain">Upload</button></a>
             <button class="buttonMenuMain">Forum</button>
             <button class="buttonMenuMain">Top 10</button>
-            <button class="buttonMenuMain">Regras</button>
-            <button class="buttonMenuMain">Contato</button>
+            <a href="/Home/Regras"><button class="buttonMenuMain">Regras</button></a>
+            <a href="/Home/Contato"><button class="buttonMenuMain">Contato</button></a>
         </div>
         <div id="userDataStrip">
-            Olá, marcospcury [Logout]
+            <div style="width:200px; float:left;">Olá, <a href="#">marcospcury</a> [<a href="#">Logout</a>]</div> 
+            <div style="width:180px; float:left;"><img src="../../Content/Images/arrowup.gif" alt="Uploaded" /> 23.34 TB <img src="../../Content/Images/arrowdown.gif" alt="Downloaded" /> 2.55 TB </div>
+            <div style="width:120px; float:left;">Ratio: 2.45 </div>
+            <div style="width:120px; float:left;">Bonus: <a href="#">433.5</a></div>
+            <div style="width:120px; float:left;">Convites: <a href="#">2</a></div>
+            <div style="width:120px; float:left;"><img src="../../Content/Images/inbox.png" alt="Uploaded" /><a href="#"> Mensagens (0)</a></div>
+            <br style="clear: both;" />
         </div>
         <div id="containerContent">
             @RenderBody()
