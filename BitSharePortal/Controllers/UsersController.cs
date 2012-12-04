@@ -33,7 +33,6 @@ namespace BitSharePortal.Controllers
             return View();
         }
 
-
         public ActionResult Logout()
         {
             FormsAuthentication.SignOut();
@@ -57,7 +56,7 @@ namespace BitSharePortal.Controllers
             }
             catch (Exception)
             {
-                
+                // qualquer falha considera usuário inválido
             }
 
             if (usuarioValido)

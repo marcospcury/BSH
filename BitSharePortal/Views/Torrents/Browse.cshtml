@@ -1,6 +1,4 @@
-﻿@{
-    ViewBag.Title = "Browse";
-}
+﻿@model BitSharePortal.Models.TorrentFilterModel
 
 <style>
     /* override na classe td, para as linhas da tabela não ficarem muito grandes*/
@@ -39,9 +37,11 @@
 <div id="torrentsContainer" class="borderedDiv">
     <div class="ui-widget-header padded">Pesquisar Torrents</div>
         <div class="padded">
-            <div style="width:300px; float:left;">Busca: <input type="text" style="width:200px;"/></div>
-            <div style="width:200px; float:left;">Categoria: <select><option>Selecione...</option><option>Filmes</option><option>Games</option><option>XXX</option></select></div> 
-            <div style="float:right;"><button id="botaoPesquisar">Pesquisar</button></div>
+            @Html.BeginForm(){
+                <div style="width:300px; float:left;">Busca: <input type="text" style="width:200px;"/></div>
+                <div style="width:200px; float:left;">Categoria: <select><option>Selecione...</option><option>Filmes</option><option>Games</option><option>XXX</option></select></div> 
+                <div style="float:right;"><button id="botaoPesquisar">Pesquisar</button></div>
+            }
         </div>
     <br style="clear: both;" />
     <div id="torrentsList" class="borderedDiv padded">
@@ -57,17 +57,17 @@
                 <td width="90" align="center">Uploader</td>
             </tr>
 
-            @for (int i = 0; i < 20; i++)
+            @foreach (var torrent in (BitSharePortal.Models.TorrentListModel)ViewBag.ListaTorrents)
             {
                 <tr>
-                    <td><a href="Download/15"><button class="downloadTorrentButton">Download .torrent</button></a></td>
-                    <td><a href="Detail/15" title="Detalhes do torrent">MAD.S03E06.This.Means.War.Machine iCharlie.1080p.WEB-DL.AAC2.0.H264-NTb</a></td>
-                    <td align="center">18.5 GB</td>
-                    <td align="center">03/12/2012 13:43</td>
-                    <td align="center">10</td>
-                    <td align="center">7</td>
-                    <td align="center">18</td>
-                    <td align="center"><a href="#">marcospcury</a></td>
+                    <td><a href="Download/@torrent.IdTorrent.ToString()"><button class="downloadTorrentButton">Download .torrent</button></a></td>
+                    <td><a href="Detail/@torrent.IdTorrent.ToString()" title="Detalhes do torrent">@torrent.NomeTorrent</a></td>
+                    <td align="center">@torrent.TamanhoTorrent.ToString()</td>
+                    <td align="center">@torrent.DataLancamento.ToString("dd/MM/yyyy hh:mm")</td>
+                    <td align="center">@torrent.Downloads</td>
+                    <td align="center">@torrent.Seeders</td>
+                    <td align="center">@torrent.Leechers</td>
+                    <td align="center"><a href="#">@torrent.UsuarioLancamento</a></td>
                 </tr>
             }
             

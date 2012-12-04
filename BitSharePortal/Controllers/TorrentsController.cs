@@ -1,4 +1,5 @@
-﻿using MonoTorrent.BEncoding;
+﻿using BitSharePortal.Models;
+using MonoTorrent.BEncoding;
 using MonoTorrent.Common;
 using System;
 using System.Collections.Generic;
@@ -20,8 +21,22 @@ namespace BitSharePortal.Controllers
             return View();
         }
 
+        [HttpPost]
+        public ActionResult Browse(TorrentFilterModel filtro)
+        {
+            var listaTorrents = new TorrentListModel();
+            listaTorrents.CarregarTodosTorrents();
+            ViewBag.ListaTorrents = listaTorrents;
+
+            return View(filtro);
+        }
+
         public ActionResult Browse()
         {
+            var listaTorrents = new TorrentListModel();
+            listaTorrents.CarregarTodosTorrents();
+            ViewBag.ListaTorrents = listaTorrents;
+
             return View();
         }
 
