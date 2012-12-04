@@ -1,0 +1,36 @@
+﻿.demoHeaders {
+    margin-top: 2em;
+}
+
+.pieceMarker {
+    margin-right: 8px;
+    border-bottom: dotted;
+    border-width: thin;
+    border-bottom-color: silver;
+}
+
+.freeLeech {
+    color: blue;
+    font-weight: bold;
+}
+
+.buttonMenuMain {
+    width: 124px;
+    border-radius: 0px 0px;
+    font-weight: bold;
+    font-size: 10px;
+}
+
+.padded {
+    padding: 5px 5px 5px 5px;
+    border-radius: 3px 3px;
+}
+
+.borderedDiv {
+    background-color: white;
+    border: solid;
+    border-color: silver;
+    border-width: thin;
+    margin:5px;
+    border-radius: 3px 3px;
+}

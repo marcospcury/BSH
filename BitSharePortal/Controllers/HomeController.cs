@@ -6,7 +6,8 @@ using System.Web.Mvc;
 
 namespace BitSharePortal.Controllers
 {
-    public class HomeController : Controller
+    [Authorize]
+    public class HomeController : BitShareController
     {
         //
         // GET: /Home/

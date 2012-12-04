@@ -58,6 +58,9 @@
     <Compile Include="Client.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Convite.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="DetalheTorrent.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>

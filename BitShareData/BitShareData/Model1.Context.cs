@@ -95,6 +95,12 @@ namespace BitShareData
             get { return _clients  ?? (_clients = CreateObjectSet<Client>("Clients")); }
         }
         private ObjectSet<Client> _clients;
+    
+        public ObjectSet<Convite> Convites
+        {
+            get { return _convites  ?? (_convites = CreateObjectSet<Convite>("Convites")); }
+        }
+        private ObjectSet<Convite> _convites;
 
         #endregion
 

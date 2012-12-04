@@ -13,7 +13,7 @@
         <EntityTypeShape EntityType="BitShare.TorrentSeed" Width="1.5" PointX="5.5" PointY="7" />
         <AssociationConnector Association="BitShare.TorrentTorrentSeed" />
         <AssociationConnector Association="BitShare.UsuarioTorrentSeed" />
-        <EntityTypeShape EntityType="BitShare.TorrentLeech" Width="1.5" PointX="3.125" PointY="7.75" />
+        <EntityTypeShape EntityType="BitShare.TorrentLeech" Width="1.5" PointX="3.125" PointY="7.625" />
         <AssociationConnector Association="BitShare.TorrentTorrentLeech" />
         <AssociationConnector Association="BitShare.UsuarioTorrentLeech" />
         <EntityTypeShape EntityType="BitShare.TokenRegistro" Width="1.5" PointX="9" PointY="3.625" />
@@ -21,6 +21,8 @@
         <AssociationConnector Association="BitShare.TorrentDetalheTorrent" />
         <EntityTypeShape EntityType="BitShare.EventoAnnounce" Width="2" PointX="9" PointY="0.5" />
         <EntityTypeShape EntityType="BitShare.Client" Width="1.5" PointX="6.625" PointY="0.5" />
+        <EntityTypeShape EntityType="BitShare.Convite" Width="1.5" PointX="0.5" PointY="7.625" />
+        <AssociationConnector Association="BitShare.UsuarioConvite" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

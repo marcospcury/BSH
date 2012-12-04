@@ -26,6 +26,8 @@ namespace BitShareTest
             user.Ativo = true;
             user.Admin = true;
             user.DataCadastro = DateTime.Now;
+            user.Bonus = 430;
+            user.ConvitesDisponiveis = 3;
 
             repositorio.Add(user);
             repositorio.SaveChanges();
@@ -39,7 +41,7 @@ namespace BitShareTest
             //var user = repo.Single(u => u.IdUsuario == 1);
             //user.Advertido = true;
             //repo.SaveChanges();
-            MonoTorrent.Common.Torrent torr = MonoTorrent.Common.Torrent.Load("C:\\Users\\Cury\\Desktop\\Torrents To Go\\The Mentalist S05E09 HDTV XviD-SaM.torrent");
+            //MonoTorrent.Common.Torrent torr = MonoTorrent.Common.Torrent.Load("C:\\Users\\Cury\\Desktop\\Torrents To Go\\The Mentalist S05E09 HDTV XviD-SaM.torrent");
             
         }
     }

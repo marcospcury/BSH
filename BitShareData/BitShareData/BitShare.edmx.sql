@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, and Azure
 -- --------------------------------------------------
--- Date Created: 11/29/2012 23:30:42
--- Generated from EDMX file: C:\Users\Cury\Documents\GitHub\monotorrent\src\BitShareData\BitShareData\BitShare.edmx
+-- Date Created: 12/04/2012 00:13:17
+-- Generated from EDMX file: C:\Users\Cury\Documents\GitHub\BSH\BitShareData\BitShareData\BitShare.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
@@ -38,6 +38,9 @@ GO
 IF OBJECT_ID(N'[dbo].[FK_TorrentDetalheTorrent]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Torrents] DROP CONSTRAINT [FK_TorrentDetalheTorrent];
 GO
+IF OBJECT_ID(N'[dbo].[FK_UsuarioConvite]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Convites] DROP CONSTRAINT [FK_UsuarioConvite];
+GO
 
 -- --------------------------------------------------
 -- Dropping existing tables
@@ -70,6 +73,9 @@ GO
 IF OBJECT_ID(N'[dbo].[Clients]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Clients];
 GO
+IF OBJECT_ID(N'[dbo].[Convites]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Convites];
+GO
 
 -- --------------------------------------------------
 -- Creating all tables
@@ -90,7 +96,9 @@ CREATE TABLE [dbo].[Usuarios] (
     [DataCadastro] datetime  NOT NULL,
     [Advertido] bit  NOT NULL,
     [Email] nvarchar(max)  NOT NULL,
-    [Admin] bit  NOT NULL
+    [Admin] bit  NOT NULL,
+    [Bonus] float  NOT NULL,
+    [ConvitesDisponiveis] int  NOT NULL
 );
 GO
 
@@ -180,6 +188,14 @@ CREATE TABLE [dbo].[Clients] (
 );
 GO
 
+-- Creating table 'Convites'
+CREATE TABLE [dbo].[Convites] (
+    [IdConvite] int IDENTITY(1,1) NOT NULL,
+    [HashConvite] nvarchar(max)  NOT NULL,
+    [Usuario_IdUsuario] int  NOT NULL
+);
+GO
+
 -- --------------------------------------------------
 -- Creating all PRIMARY KEY constraints
 -- --------------------------------------------------
@@ -236,6 +252,12 @@ GO
 ALTER TABLE [dbo].[Clients]
 ADD CONSTRAINT [PK_Clients]
     PRIMARY KEY CLUSTERED ([IdClient] ASC);
+GO
+
+-- Creating primary key on [IdConvite] in table 'Convites'
+ALTER TABLE [dbo].[Convites]
+ADD CONSTRAINT [PK_Convites]
+    PRIMARY KEY CLUSTERED ([IdConvite] ASC);
 GO
 
 -- --------------------------------------------------
@@ -338,6 +360,20 @@ ADD CONSTRAINT [FK_TorrentDetalheTorrent]
 CREATE INDEX [IX_FK_TorrentDetalheTorrent]
 ON [dbo].[Torrents]
     ([DetalheTorrent_IdDetalheTorrent]);
+GO
+
+-- Creating foreign key on [Usuario_IdUsuario] in table 'Convites'
+ALTER TABLE [dbo].[Convites]
+ADD CONSTRAINT [FK_UsuarioConvite]
+    FOREIGN KEY ([Usuario_IdUsuario])
+    REFERENCES [dbo].[Usuarios]
+        ([IdUsuario])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_UsuarioConvite'
+CREATE INDEX [IX_FK_UsuarioConvite]
+ON [dbo].[Convites]
+    ([Usuario_IdUsuario]);
 GO
 
 -- --------------------------------------------------

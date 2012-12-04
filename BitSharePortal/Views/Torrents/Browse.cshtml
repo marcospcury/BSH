@@ -3,25 +3,74 @@
 }
 
 <style>
-    #torrentContainer {
-        background-color: white;
-        border: solid;
-        border-color: silver;
-        border-width: thin;
-        width: 898px;
-        margin-left: 5px;
-        margin-top: 5px;
-        border-radius: 3px 3px;
+    /* override na classe td, para as linhas da tabela não ficarem muito grandes*/
+    td {
+    padding: 0px 5px 0px 5px;
+    border-width: 0 0 1px 1px;
+    border-spacing: 0;
+    border-collapse: collapse;
+    border-style: solid;
+    border-color: silver;
+}
 
-    }
+#botaoPesquisar {
+        font: 98% "Trebuchet MS", sans-serif;
+}
 
 </style>
 
-<div id="torrentContainer">
+<script>
+    $(function () {
+        $(".downloadTorrentButton").button({
+            icons: {
+                primary: "ui-icon-disk"
+            },
+            text: false
+        });
+
+        $("#botaoPesquisar").button({
+            icons: {
+                primary: "ui-icon-search"
+            }
+        });
+    });
+</script>
+
+<div id="torrentsContainer" class="borderedDiv">
     <div class="ui-widget-header padded">Pesquisar Torrents</div>
         <div class="padded">
-              <div style="width:300px; float:left;">Busca: <input type="text" style="width:200px;"/></div>
-              <div style="width:200px; float:left;">Categoria:</div> 
+            <div style="width:300px; float:left;">Busca: <input type="text" style="width:200px;"/></div>
+            <div style="width:200px; float:left;">Categoria: <select><option>Selecione...</option><option>Filmes</option><option>Games</option><option>XXX</option></select></div> 
+            <div style="float:right;"><button id="botaoPesquisar">Pesquisar</button></div>
         </div>
-     <br style="clear: both;" />
+    <br style="clear: both;" />
+    <div id="torrentsList" class="borderedDiv padded">
+        <table>
+            <tr class="ui-widget-header">
+                <td></td>
+                <td width="450">Torrent</td>
+                <td width="60" align="center"><span title="Tamanho" class="ui-icon ui-icon-info" style="display:inline-block"></span></td>
+                <td width="95" align="center"><span title="Adicionado" class="ui-icon ui-icon-clock" style="display:inline-block"></span></td>
+                <td width="20" align="center"><span title="Baixado" class="ui-icon ui-icon-check" style="display:inline-block"></span></td>
+                <td width="20" align="center"><span title="Seeders" class="ui-icon ui-icon-arrowthick-1-n" style="display:inline-block"></span></td>
+                <td width="20" align="center"><a href="#"><span title="Leechers" class="ui-icon ui-icon-arrowthick-1-s" style="display:inline-block"></span></a></td>
+                <td width="90" align="center">Uploader</td>
+            </tr>
+
+            @for (int i = 0; i < 20; i++)
+            {
+                <tr>
+                    <td><a href="Download/15"><button class="downloadTorrentButton">Download .torrent</button></a></td>
+                    <td><a href="Detail/15" title="Detalhes do torrent">MAD.S03E06.This.Means.War.Machine iCharlie.1080p.WEB-DL.AAC2.0.H264-NTb</a></td>
+                    <td align="center">18.5 GB</td>
+                    <td align="center">03/12/2012 13:43</td>
+                    <td align="center">10</td>
+                    <td align="center">7</td>
+                    <td align="center">18</td>
+                    <td align="center"><a href="#">marcospcury</a></td>
+                </tr>
+            }
+            
+        </table>
+    </div>
 </div>

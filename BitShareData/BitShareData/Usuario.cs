@@ -102,6 +102,18 @@ namespace BitShareData
             get;
             set;
         }
+    
+        public virtual double Bonus
+        {
+            get;
+            set;
+        }
+    
+        public virtual int ConvitesDisponiveis
+        {
+            get;
+            set;
+        }
 
         #endregion
 
@@ -202,6 +214,38 @@ namespace BitShareData
             }
         }
         private ICollection<TorrentLeech> _torrentLeeches;
+    
+        public virtual ICollection<Convite> Convites
+        {
+            get
+            {
+                if (_convites == null)
+                {
+                    var newCollection = new FixupCollection<Convite>();
+                    newCollection.CollectionChanged += FixupConvites;
+                    _convites = newCollection;
+                }
+                return _convites;
+            }
+            set
+            {
+                if (!ReferenceEquals(_convites, value))
+                {
+                    var previousValue = _convites as FixupCollection<Convite>;
+                    if (previousValue != null)
+                    {
+                        previousValue.CollectionChanged -= FixupConvites;
+                    }
+                    _convites = value;
+                    var newValue = value as FixupCollection<Convite>;
+                    if (newValue != null)
+                    {
+                        newValue.CollectionChanged += FixupConvites;
+                    }
+                }
+            }
+        }
+        private ICollection<Convite> _convites;
 
         #endregion
 
@@ -264,6 +308,28 @@ namespace BitShareData
             if (e.OldItems != null)
             {
                 foreach (TorrentLeech item in e.OldItems)
+                {
+                    if (ReferenceEquals(item.Usuario, this))
+                    {
+                        item.Usuario = null;
+                    }
+                }
+            }
+        }
+    
+        private void FixupConvites(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (Convite item in e.NewItems)
+                {
+                    item.Usuario = this;
+                }
+            }
+    
+            if (e.OldItems != null)
+            {
+                foreach (Convite item in e.OldItems)
                 {
                     if (ReferenceEquals(item.Usuario, this))
                     {

@@ -15,6 +15,7 @@
     <EntitySet Name="DetalheTorrents" EntityType="BitShare.Store.DetalheTorrents" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="EventosAnnounce" EntityType="BitShare.Store.EventosAnnounce" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Clients" EntityType="BitShare.Store.Clients" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Convites" EntityType="BitShare.Store.Convites" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="UsuarioTorrent" Association="BitShare.Store.UsuarioTorrent">
       <End Role="Usuario" EntitySet="Usuarios" />
       <End Role="Torrent" EntitySet="Torrents" />
@@ -43,6 +44,10 @@
       <End Role="Torrent" EntitySet="Torrents" />
       <End Role="DetalheTorrent" EntitySet="DetalheTorrents" />
     </AssociationSet>
+    <AssociationSet Name="UsuarioConvite" Association="BitShare.Store.UsuarioConvite">
+      <End Role="Usuario" EntitySet="Usuarios" />
+      <End Role="Convite" EntitySet="Convites" />
+    </AssociationSet>
   </EntityContainer>
   <EntityType Name="Usuarios">
     <Key>
@@ -62,6 +67,8 @@
     <Property Name="Advertido" Type="bit" Nullable="false" />
     <Property Name="Email" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Admin" Type="bit" Nullable="false" />
+    <Property Name="Bonus" Type="float" Nullable="false" />
+    <Property Name="ConvitesDisponiveis" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="Torrents">
     <Key>
@@ -149,6 +156,14 @@
     <Property Name="PeerID" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Nome" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
+  <EntityType Name="Convites">
+    <Key>
+      <PropertyRef Name="IdConvite" />
+    </Key>
+    <Property Name="IdConvite" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="HashConvite" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Usuario_IdUsuario" Type="int" Nullable="false" />
+  </EntityType>
   <Association Name="UsuarioTorrent">
     <End Role="Usuario" Type="BitShare.Store.Usuarios" Multiplicity="1" />
     <End Role="Torrent" Type="BitShare.Store.Torrents" Multiplicity="*" />
@@ -233,6 +248,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="UsuarioConvite">
+    <End Role="Usuario" Type="BitShare.Store.Usuarios" Multiplicity="1" />
+    <End Role="Convite" Type="BitShare.Store.Convites" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuario">
+        <PropertyRef Name="IdUsuario" />
+      </Principal>
+      <Dependent Role="Convite">
+        <PropertyRef Name="Usuario_IdUsuario" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -275,6 +302,11 @@
           </AssociationSet>
           <EntitySet Name="EventosAnnounce" EntityType="BitShare.EventoAnnounce" />
           <EntitySet Name="Clients" EntityType="BitShare.Client" />
+          <EntitySet Name="Convites" EntityType="BitShare.Convite" />
+          <AssociationSet Name="UsuarioConvite" Association="BitShare.UsuarioConvite">
+            <End Role="Usuario" EntitySet="Usuarios" />
+            <End Role="Convite" EntitySet="Convites" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Usuario">
           <Key>
@@ -297,6 +329,9 @@
           <Property Type="Boolean" Name="Admin" Nullable="false" />
           <NavigationProperty Name="TorrentSeeds" Relationship="BitShare.UsuarioTorrentSeed" FromRole="Usuario" ToRole="TorrentSeed" />
           <NavigationProperty Name="TorrentLeeches" Relationship="BitShare.UsuarioTorrentLeech" FromRole="Usuario" ToRole="TorrentLeech" />
+          <NavigationProperty Name="Convites" Relationship="BitShare.UsuarioConvite" FromRole="Usuario" ToRole="Convite" />
+          <Property Type="Double" Name="Bonus" Nullable="false" />
+          <Property Type="Int32" Name="ConvitesDisponiveis" Nullable="false" />
         </EntityType>
         <EntityType Name="Torrent">
           <Key>
@@ -416,6 +451,18 @@
           <Property Type="String" Name="PeerID" Nullable="false" />
           <Property Type="String" Name="Nome" Nullable="false" />
         </EntityType>
+        <EntityType Name="Convite">
+          <Key>
+            <PropertyRef Name="IdConvite" />
+          </Key>
+          <Property Type="Int32" Name="IdConvite" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="HashConvite" Nullable="false" />
+          <NavigationProperty Name="Usuario" Relationship="BitShare.UsuarioConvite" FromRole="Convite" ToRole="Usuario" />
+        </EntityType>
+        <Association Name="UsuarioConvite">
+          <End Type="BitShare.Usuario" Role="Usuario" Multiplicity="1" />
+          <End Type="BitShare.Convite" Role="Convite" Multiplicity="*" />
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -439,6 +486,8 @@
           <ScalarProperty Name="Advertido" ColumnName="Advertido" />
           <ScalarProperty Name="Email" ColumnName="Email" />
           <ScalarProperty Name="Admin" ColumnName="Admin" />
+          <ScalarProperty Name="Bonus" ColumnName="Bonus" />
+          <ScalarProperty Name="ConvitesDisponiveis" ColumnName="ConvitesDisponiveis" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -529,6 +578,14 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="Convites">
+      <EntityTypeMapping TypeName="IsTypeOf(BitShare.Convite)">
+        <MappingFragment StoreEntitySet="Convites">
+          <ScalarProperty Name="IdConvite" ColumnName="IdConvite" />
+          <ScalarProperty Name="HashConvite" ColumnName="HashConvite" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <AssociationSetMapping Name="UsuarioTorrent" TypeName="BitShare.UsuarioTorrent" StoreEntitySet="Torrents">
       <EndProperty Name="Usuario">
         <ScalarProperty Name="IdUsuario" ColumnName="UsuarioLancamento_IdUsuario" />
@@ -583,6 +640,14 @@
       </EndProperty>
       <EndProperty Name="Torrent">
         <ScalarProperty Name="IdTorrent" ColumnName="IdTorrent" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="UsuarioConvite" TypeName="BitShare.UsuarioConvite" StoreEntitySet="Convites">
+      <EndProperty Name="Usuario">
+        <ScalarProperty Name="IdUsuario" ColumnName="Usuario_IdUsuario" />
+      </EndProperty>
+      <EndProperty Name="Convite">
+        <ScalarProperty Name="IdConvite" ColumnName="IdConvite" />
       </EndProperty>
     </AssociationSetMapping>
   </EntityContainerMapping>
