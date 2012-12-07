@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, and Azure
 -- --------------------------------------------------
--- Date Created: 12/04/2012 00:13:17
+-- Date Created: 12/05/2012 18:13:40
 -- Generated from EDMX file: C:\Users\Cury\Documents\GitHub\BSH\BitShareData\BitShareData\BitShare.edmx
 -- --------------------------------------------------
 
@@ -114,6 +114,9 @@ CREATE TABLE [dbo].[Torrents] (
     [FreeLeech] bit  NOT NULL,
     [Ativo] bit  NOT NULL,
     [PrimeiroSnatch] bit  NOT NULL,
+    [Downloads] int  NOT NULL,
+    [Categoria] nvarchar(max)  NOT NULL,
+    [Arquivo] nvarchar(max)  NOT NULL,
     [UsuarioLancamento_IdUsuario] int  NOT NULL,
     [DetalheTorrent_IdDetalheTorrent] int  NOT NULL
 );
@@ -161,7 +164,19 @@ GO
 -- Creating table 'DetalheTorrents'
 CREATE TABLE [dbo].[DetalheTorrents] (
     [IdDetalheTorrent] int IDENTITY(1,1) NOT NULL,
-    [Descricao] nvarchar(max)  NOT NULL
+    [NomeFilme] nvarchar(max)  NOT NULL,
+    [Descricao] nvarchar(max)  NOT NULL,
+    [Imagens] nvarchar(max)  NOT NULL,
+    [ImagemCapaURL] nvarchar(max)  NOT NULL,
+    [TrailerYoutubeURL] nvarchar(max)  NOT NULL,
+    [Genero] nvarchar(max)  NOT NULL,
+    [AnoLancamento] nvarchar(max)  NOT NULL,
+    [Diretor] nvarchar(max)  NOT NULL,
+    [Atores] nvarchar(max)  NOT NULL,
+    [LinkIMDB] nvarchar(max)  NOT NULL,
+    [Resolucao] nvarchar(max)  NOT NULL,
+    [CodecAudio] nvarchar(max)  NOT NULL,
+    [CodecVideo] nvarchar(max)  NOT NULL
 );
 GO
 
@@ -193,6 +208,15 @@ CREATE TABLE [dbo].[Convites] (
     [IdConvite] int IDENTITY(1,1) NOT NULL,
     [HashConvite] nvarchar(max)  NOT NULL,
     [Usuario_IdUsuario] int  NOT NULL
+);
+GO
+
+-- Creating table 'Legendas'
+CREATE TABLE [dbo].[Legendas] (
+    [IdLegenda] int IDENTITY(1,1) NOT NULL,
+    [Arquivo] nvarchar(max)  NOT NULL,
+    [Idioma] nvarchar(max)  NOT NULL,
+    [DetalheTorrent_IdDetalheTorrent] int  NOT NULL
 );
 GO
 
@@ -258,6 +282,12 @@ GO
 ALTER TABLE [dbo].[Convites]
 ADD CONSTRAINT [PK_Convites]
     PRIMARY KEY CLUSTERED ([IdConvite] ASC);
+GO
+
+-- Creating primary key on [IdLegenda] in table 'Legendas'
+ALTER TABLE [dbo].[Legendas]
+ADD CONSTRAINT [PK_Legendas]
+    PRIMARY KEY CLUSTERED ([IdLegenda] ASC);
 GO
 
 -- --------------------------------------------------
@@ -374,6 +404,20 @@ ADD CONSTRAINT [FK_UsuarioConvite]
 CREATE INDEX [IX_FK_UsuarioConvite]
 ON [dbo].[Convites]
     ([Usuario_IdUsuario]);
+GO
+
+-- Creating foreign key on [DetalheTorrent_IdDetalheTorrent] in table 'Legendas'
+ALTER TABLE [dbo].[Legendas]
+ADD CONSTRAINT [FK_DetalheTorrentLegenda]
+    FOREIGN KEY ([DetalheTorrent_IdDetalheTorrent])
+    REFERENCES [dbo].[DetalheTorrents]
+        ([IdDetalheTorrent])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_DetalheTorrentLegenda'
+CREATE INDEX [IX_FK_DetalheTorrentLegenda]
+ON [dbo].[Legendas]
+    ([DetalheTorrent_IdDetalheTorrent]);
 GO
 
 -- --------------------------------------------------

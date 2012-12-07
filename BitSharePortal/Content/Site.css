@@ -62,7 +62,15 @@ p {
     font: 110% "Trebuchet MS", sans-serif;
 }
 
+button{
+        font: 98% "Trebuchet MS", sans-serif;
+}
+
 input {
+        font: 98% "Trebuchet MS", sans-serif;
+}
+
+textarea {
         font: 98% "Trebuchet MS", sans-serif;
 }
 

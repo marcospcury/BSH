@@ -1,4 +1,5 @@
-﻿using BitSharePortal.Models;
+﻿using BitShareData;
+using BitSharePortal.Models;
 using MonoTorrent.BEncoding;
 using MonoTorrent.Common;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Mvc;
 
 namespace BitSharePortal.Controllers
@@ -13,8 +15,9 @@ namespace BitSharePortal.Controllers
     [Authorize]
     public class TorrentsController : BitShareController
     {
-        //
-        // GET: /Torrents/
+        private List<SelectListItem> ListaCategoria = new List<SelectListItem>();
+
+        private string queryBase = "select t.IdTorrent, t.Nome, t.Tamanho, t.Seeds, t.Leechers, t.DataLancamento, 0 as Downloads, u.Nome as UsuarioLancamento From Torrents t Inner Join Usuarios u on u.IdUsuario = t.UsuarioLancamento_IdUsuario";
 
         public ActionResult Index()
         {
@@ -24,8 +27,9 @@ namespace BitSharePortal.Controllers
         [HttpPost]
         public ActionResult Browse(TorrentFilterModel filtro)
         {
-            var listaTorrents = new TorrentListModel();
-            listaTorrents.CarregarTodosTorrents();
+            CarregarListaCategoria();
+
+            var listaTorrents = Connection.ExecuteQuery<TorrentModel>(queryBase);
             ViewBag.ListaTorrents = listaTorrents;
 
             return View(filtro);
@@ -33,8 +37,9 @@ namespace BitSharePortal.Controllers
 
         public ActionResult Browse()
         {
-            var listaTorrents = new TorrentListModel();
-            listaTorrents.CarregarTodosTorrents();
+            CarregarListaCategoria();
+
+            var listaTorrents = Connection.ExecuteQuery<TorrentModel>(queryBase);
             ViewBag.ListaTorrents = listaTorrents;
 
             return View();
@@ -45,8 +50,82 @@ namespace BitSharePortal.Controllers
             return View();
         }
 
+        [HttpPost]
+        public ActionResult Upload(HttpPostedFileBase uploadFile, TorrentUploadModel model)
+        {
+            CarregarListaCategoria();
+
+            if (ModelState.IsValid)
+            {
+                var arquivoTorrent = String.Format("{0}\\{1}", Server.MapPath("/Torrents"), uploadFile.FileName);
+                uploadFile.SaveAs(arquivoTorrent);
+                var dadosTorrent = MonoTorrent.Common.Torrent.Load(arquivoTorrent);
+                Usuario usuarioLancamento;
+
+                using (var repositorio = new DataRepository<BitShareData.Torrent>())
+                {
+                    var detalhe = new DetalheTorrent();
+
+                    detalhe.IdDetalheTorrent = 0;
+                    detalhe.Descricao = model.Descricao;
+                    detalhe.Imagens = model.ImagensURL;
+
+                    var bitShareTorrent = new BitShareData.Torrent();
+                    bitShareTorrent.IdTorrent = 0;
+                    bitShareTorrent.Nome = uploadFile.FileName; // Trocar por nome e criar um campo de arquivo
+                    bitShareTorrent.Categoria = model.Categoria;
+                    bitShareTorrent.HashInfo = dadosTorrent.InfoHash.ToString();
+                    bitShareTorrent.Tamanho = dadosTorrent.Size;
+                    bitShareTorrent.Seeds = 0;
+                    bitShareTorrent.Leechers = 0;
+                    bitShareTorrent.DataLancamento = DateTime.Now;
+                    bitShareTorrent.FreeLeech = false;
+                    bitShareTorrent.Ativo = true;
+                    bitShareTorrent.PrimeiroSnatch = false;
+                    bitShareTorrent.DetalheTorrent = detalhe;
+
+                    foreach (var file in dadosTorrent.Files)
+                    {
+                        var arquivo = new ArquivoTorrent();
+                        arquivo.Nome = file.Path;
+                        arquivo.Tamanho = file.Length;
+
+                        bitShareTorrent.ArquivoTorrents.Add(arquivo);
+                    }
+
+                    // recupera o usuário pela entity, para poder fazer o relacionamento com o Torrent
+                    using (var repositorioUsuario = new DataRepository<BitShareData.Usuario>(repositorio.Context))
+                    {
+                        usuarioLancamento = repositorioUsuario.First(u => u.IdUsuario == UsuarioLogado.IdUsuario);
+
+                        bitShareTorrent.UsuarioLancamento = usuarioLancamento;
+
+                        repositorio.Add(bitShareTorrent);
+                        repositorio.SaveChanges();
+                    }
+                }
+            }
+
+            return View(model);
+        }
+
+        public ActionResult PesquisarFilmes(string term)
+        {
+            var resultado = new List<PesquisaFilmesJsonResult>();
+            var pesquisaFilmes = new Imdb();
+            var filmesResult = pesquisaFilmes.PesquisarFilmes(term).Take(10);
+
+            foreach (var filmeResult in filmesResult)
+            {
+                resultado.Add(new PesquisaFilmesJsonResult() { label = filmeResult.Nome, image = filmeResult.URLImagem });
+            }
+
+            return Json(resultado, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult Upload()
         {
+            CarregarListaCategoria();
             return View();
         }
 
@@ -54,8 +133,10 @@ namespace BitSharePortal.Controllers
         {
             try
             {
+                var torrent = Connection.ExecuteQuery<BitShareData.Torrent>(String.Format("Select Nome from Torrents where IdTorrent = {0}", id.ToString())).First();
+
                 byte[] buffer;
-                using (var torrentStream = System.IO.File.Open("C:\\Users\\Cury\\Desktop\\Torrents To Go\\The Mentalist S05E09 HDTV XviD-SaM.torrent", FileMode.Open))
+                using (var torrentStream = System.IO.File.Open(String.Format("{0}\\{1}", Server.MapPath("/Torrents"), torrent.Nome), FileMode.Open))
                 {
                     BEncodedDictionary torrentDict = (BEncodedDictionary)BEncodedValue.Decode(torrentStream);
                     BEncodedString trackers = (BEncodedString)torrentDict["announce"];
@@ -64,13 +145,24 @@ namespace BitSharePortal.Controllers
                     buffer = torrentDict.Encode();
                 }
 
-                return File(buffer, "application/x-bittorrent", "The Mentalist S05E09 HDTV XviD-SaM.torrent");
+                return File(buffer, "application/x-bittorrent", torrent.Nome);
             }
             catch (Exception)
             {
                 //TODO: tratar erro
                 throw;
             }
+        }
+
+        private void CarregarListaCategoria()
+        {
+            ListaCategoria.Add(new SelectListItem() { Value = "", Text = "Selecione", Selected = true });
+            ListaCategoria.Add(new SelectListItem() { Value = "Filmes", Text = "Filmes" });
+            ListaCategoria.Add(new SelectListItem() { Value = "Séries", Text = "Séries" });
+            ListaCategoria.Add(new SelectListItem() { Value = "Games", Text = "Games" });
+            ListaCategoria.Add(new SelectListItem() { Value = "XXX", Text = "XXX" });
+
+            ViewBag.ListaCategoria = ListaCategoria;
         }
     }
 }

@@ -16,6 +16,7 @@
     <EntitySet Name="EventosAnnounce" EntityType="BitShare.Store.EventosAnnounce" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Clients" EntityType="BitShare.Store.Clients" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Convites" EntityType="BitShare.Store.Convites" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Legendas" EntityType="BitShare.Store.Legendas" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="UsuarioTorrent" Association="BitShare.Store.UsuarioTorrent">
       <End Role="Usuario" EntitySet="Usuarios" />
       <End Role="Torrent" EntitySet="Torrents" />
@@ -47,6 +48,10 @@
     <AssociationSet Name="UsuarioConvite" Association="BitShare.Store.UsuarioConvite">
       <End Role="Usuario" EntitySet="Usuarios" />
       <End Role="Convite" EntitySet="Convites" />
+    </AssociationSet>
+    <AssociationSet Name="DetalheTorrentLegenda" Association="BitShare.Store.DetalheTorrentLegenda">
+      <End Role="DetalheTorrent" EntitySet="DetalheTorrents" />
+      <End Role="Legenda" EntitySet="Legendas" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="Usuarios">
@@ -84,6 +89,9 @@
     <Property Name="FreeLeech" Type="bit" Nullable="false" />
     <Property Name="Ativo" Type="bit" Nullable="false" />
     <Property Name="PrimeiroSnatch" Type="bit" Nullable="false" />
+    <Property Name="Downloads" Type="int" Nullable="false" />
+    <Property Name="Categoria" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Arquivo" Type="nvarchar(max)" Nullable="false" />
     <Property Name="UsuarioLancamento_IdUsuario" Type="int" Nullable="false" />
     <Property Name="DetalheTorrent_IdDetalheTorrent" Type="int" Nullable="false" />
   </EntityType>
@@ -131,7 +139,19 @@
       <PropertyRef Name="IdDetalheTorrent" />
     </Key>
     <Property Name="IdDetalheTorrent" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="NomeFilme" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Descricao" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Imagens" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="ImagemCapaURL" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="TrailerYoutubeURL" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Genero" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="AnoLancamento" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Diretor" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Atores" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="LinkIMDB" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Resolucao" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="CodecAudio" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="CodecVideo" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
   <EntityType Name="EventosAnnounce">
     <Key>
@@ -163,6 +183,15 @@
     <Property Name="IdConvite" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="HashConvite" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Usuario_IdUsuario" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Legendas">
+    <Key>
+      <PropertyRef Name="IdLegenda" />
+    </Key>
+    <Property Name="IdLegenda" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Arquivo" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Idioma" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="DetalheTorrent_IdDetalheTorrent" Type="int" Nullable="false" />
   </EntityType>
   <Association Name="UsuarioTorrent">
     <End Role="Usuario" Type="BitShare.Store.Usuarios" Multiplicity="1" />
@@ -260,6 +289,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="DetalheTorrentLegenda">
+    <End Role="DetalheTorrent" Type="BitShare.Store.DetalheTorrents" Multiplicity="1" />
+    <End Role="Legenda" Type="BitShare.Store.Legendas" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="DetalheTorrent">
+        <PropertyRef Name="IdDetalheTorrent" />
+      </Principal>
+      <Dependent Role="Legenda">
+        <PropertyRef Name="DetalheTorrent_IdDetalheTorrent" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -307,6 +348,11 @@
             <End Role="Usuario" EntitySet="Usuarios" />
             <End Role="Convite" EntitySet="Convites" />
           </AssociationSet>
+          <EntitySet Name="Legendas" EntityType="BitShare.Legenda" />
+          <AssociationSet Name="DetalheTorrentLegenda" Association="BitShare.DetalheTorrentLegenda">
+            <End Role="DetalheTorrent" EntitySet="DetalheTorrents" />
+            <End Role="Legenda" EntitySet="Legendas" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Usuario">
           <Key>
@@ -352,6 +398,9 @@
           <Property Type="Boolean" Name="Ativo" Nullable="false" />
           <Property Type="Boolean" Name="PrimeiroSnatch" Nullable="false" />
           <NavigationProperty Name="DetalheTorrent" Relationship="BitShare.TorrentDetalheTorrent" FromRole="Torrent" ToRole="DetalheTorrent" />
+          <Property Type="Int32" Name="Downloads" Nullable="false" />
+          <Property Type="String" Name="Categoria" Nullable="false" />
+          <Property Type="String" Name="Arquivo" Nullable="false" />
         </EntityType>
         <Association Name="UsuarioTorrent">
           <End Type="BitShare.Usuario" Role="Usuario" Multiplicity="1" />
@@ -422,7 +471,20 @@
           </Key>
           <Property Type="Int32" Name="IdDetalheTorrent" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="Torrent" Relationship="BitShare.TorrentDetalheTorrent" FromRole="DetalheTorrent" ToRole="Torrent" />
+          <Property Type="String" Name="NomeFilme" Nullable="false" />
           <Property Type="String" Name="Descricao" Nullable="false" />
+          <Property Type="String" Name="Imagens" Nullable="false" />
+          <Property Type="String" Name="ImagemCapaURL" Nullable="false" />
+          <Property Type="String" Name="TrailerYoutubeURL" Nullable="false" />
+          <Property Type="String" Name="Genero" Nullable="false" />
+          <Property Type="String" Name="AnoLancamento" Nullable="false" />
+          <Property Type="String" Name="Diretor" Nullable="false" />
+          <Property Type="String" Name="Atores" Nullable="false" />
+          <Property Type="String" Name="LinkIMDB" Nullable="false" />
+          <Property Type="String" Name="Resolucao" Nullable="false" />
+          <Property Type="String" Name="CodecAudio" Nullable="false" />
+          <Property Type="String" Name="CodecVideo" Nullable="false" />
+          <NavigationProperty Name="Legendas" Relationship="BitShare.DetalheTorrentLegenda" FromRole="DetalheTorrent" ToRole="Legenda" />
         </EntityType>
         <Association Name="TorrentDetalheTorrent">
           <End Type="BitShare.Torrent" Role="Torrent" Multiplicity="1" />
@@ -462,6 +524,19 @@
         <Association Name="UsuarioConvite">
           <End Type="BitShare.Usuario" Role="Usuario" Multiplicity="1" />
           <End Type="BitShare.Convite" Role="Convite" Multiplicity="*" />
+        </Association>
+        <EntityType Name="Legenda">
+          <Key>
+            <PropertyRef Name="IdLegenda" />
+          </Key>
+          <Property Type="Int32" Name="IdLegenda" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="Arquivo" Nullable="false" />
+          <Property Type="String" Name="Idioma" Nullable="false" />
+          <NavigationProperty Name="DetalheTorrent" Relationship="BitShare.DetalheTorrentLegenda" FromRole="Legenda" ToRole="DetalheTorrent" />
+        </EntityType>
+        <Association Name="DetalheTorrentLegenda">
+          <End Type="BitShare.DetalheTorrent" Role="DetalheTorrent" Multiplicity="1" />
+          <End Type="BitShare.Legenda" Role="Legenda" Multiplicity="*" />
         </Association>
       </Schema>
     </edmx:ConceptualModels>
@@ -504,6 +579,9 @@
           <ScalarProperty Name="FreeLeech" ColumnName="FreeLeech" />
           <ScalarProperty Name="Ativo" ColumnName="Ativo" />
           <ScalarProperty Name="PrimeiroSnatch" ColumnName="PrimeiroSnatch" />
+          <ScalarProperty Name="Downloads" ColumnName="Downloads" />
+          <ScalarProperty Name="Categoria" ColumnName="Categoria" />
+          <ScalarProperty Name="Arquivo" ColumnName="Arquivo" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -549,7 +627,19 @@
       <EntityTypeMapping TypeName="IsTypeOf(BitShare.DetalheTorrent)">
         <MappingFragment StoreEntitySet="DetalheTorrents">
           <ScalarProperty Name="IdDetalheTorrent" ColumnName="IdDetalheTorrent" />
+          <ScalarProperty Name="NomeFilme" ColumnName="NomeFilme" />
           <ScalarProperty Name="Descricao" ColumnName="Descricao" />
+          <ScalarProperty Name="Imagens" ColumnName="Imagens" />
+          <ScalarProperty Name="ImagemCapaURL" ColumnName="ImagemCapaURL" />
+          <ScalarProperty Name="TrailerYoutubeURL" ColumnName="TrailerYoutubeURL" />
+          <ScalarProperty Name="Genero" ColumnName="Genero" />
+          <ScalarProperty Name="AnoLancamento" ColumnName="AnoLancamento" />
+          <ScalarProperty Name="Diretor" ColumnName="Diretor" />
+          <ScalarProperty Name="Atores" ColumnName="Atores" />
+          <ScalarProperty Name="LinkIMDB" ColumnName="LinkIMDB" />
+          <ScalarProperty Name="Resolucao" ColumnName="Resolucao" />
+          <ScalarProperty Name="CodecAudio" ColumnName="CodecAudio" />
+          <ScalarProperty Name="CodecVideo" ColumnName="CodecVideo" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -583,6 +673,15 @@
         <MappingFragment StoreEntitySet="Convites">
           <ScalarProperty Name="IdConvite" ColumnName="IdConvite" />
           <ScalarProperty Name="HashConvite" ColumnName="HashConvite" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Legendas">
+      <EntityTypeMapping TypeName="IsTypeOf(BitShare.Legenda)">
+        <MappingFragment StoreEntitySet="Legendas">
+          <ScalarProperty Name="IdLegenda" ColumnName="IdLegenda" />
+          <ScalarProperty Name="Arquivo" ColumnName="Arquivo" />
+          <ScalarProperty Name="Idioma" ColumnName="Idioma" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -648,6 +747,14 @@
       </EndProperty>
       <EndProperty Name="Convite">
         <ScalarProperty Name="IdConvite" ColumnName="IdConvite" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="DetalheTorrentLegenda" TypeName="BitShare.DetalheTorrentLegenda" StoreEntitySet="Legendas">
+      <EndProperty Name="DetalheTorrent">
+        <ScalarProperty Name="IdDetalheTorrent" ColumnName="DetalheTorrent_IdDetalheTorrent" />
+      </EndProperty>
+      <EndProperty Name="Legenda">
+        <ScalarProperty Name="IdLegenda" ColumnName="IdLegenda" />
       </EndProperty>
     </AssociationSetMapping>
   </EntityContainerMapping>

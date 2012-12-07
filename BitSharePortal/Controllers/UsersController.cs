@@ -1,8 +1,10 @@
 ﻿using BitShareData;
 using BitSharePortal.Models;
 using System;
+using System.Data.SqlClient;
 using System.Web.Mvc;
 using System.Web.Security;
+using System.Linq;
 
 namespace BitSharePortal.Controllers
 {
@@ -46,13 +48,9 @@ namespace BitSharePortal.Controllers
            
             try
             {
-                using (var repositorio = new DataRepository<Usuario>())
-                {
-                    var usuario = repositorio.Single(u => u.Nome == login.Username && u.Senha == login.Password);
-                    UsuarioLogado = usuario;
-
-                    usuarioValido = true;
-                }
+                var usuario = Connection.ExecuteQuery<Usuario>(String.Format("select * from usuarios where Nome = '{0}' And Senha = '{1}'", login.Username, login.Password)).First();
+                usuarioValido = true;
+                UsuarioLogado = usuario;
             }
             catch (Exception)
             {

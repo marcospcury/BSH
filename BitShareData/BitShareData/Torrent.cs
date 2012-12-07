@@ -78,6 +78,24 @@ namespace BitShareData
             get;
             set;
         }
+    
+        public virtual int Downloads
+        {
+            get;
+            set;
+        }
+    
+        public virtual string Categoria
+        {
+            get;
+            set;
+        }
+    
+        public virtual string Arquivo
+        {
+            get;
+            set;
+        }
 
         #endregion
 

@@ -1,6 +1,7 @@
 ﻿using BitShareData;
 using System;
 using System.Web.Mvc;
+using System.Linq;
 
 namespace BitSharePortal.Controllers
 {
@@ -33,12 +34,11 @@ namespace BitSharePortal.Controllers
                 // a cada 5 minutos atualiza os dados do usuário, para trazer dados novos de upload, ratio, etc.
                 if (Session["UsuarioLogado"] == null || DataAtualizacaoDadosUsuario.AddMinutes(5) <= DateTime.Now)
                 {
-                    using (var repositorio = new DataRepository<Usuario>())
-                    {
-                        var usuario = repositorio.Single(u => u.IdUsuario == Int32.Parse(User.Identity.Name));
+
+                        var usuario = Connection.ExecuteQuery<Usuario>(String.Format("select * from usuarios where IdUsuario = {0}", User.Identity.Name)).First(); 
                         Session["UsuarioLogado"] = usuario;
                         DataAtualizacaoDadosUsuario = DateTime.Now;
-                    }
+                   
                 }
 
                 return (Usuario)Session["UsuarioLogado"];

@@ -37,11 +37,12 @@
 <div id="torrentsContainer" class="borderedDiv">
     <div class="ui-widget-header padded">Pesquisar Torrents</div>
         <div class="padded">
-            @Html.BeginForm(){
+            @using(Html.BeginForm()){
                 <div style="width:300px; float:left;">Busca: <input type="text" style="width:200px;"/></div>
                 <div style="width:200px; float:left;">Categoria: <select><option>Selecione...</option><option>Filmes</option><option>Games</option><option>XXX</option></select></div> 
                 <div style="float:right;"><button id="botaoPesquisar">Pesquisar</button></div>
             }
+            
         </div>
     <br style="clear: both;" />
     <div id="torrentsList" class="borderedDiv padded">
@@ -57,15 +58,15 @@
                 <td width="90" align="center">Uploader</td>
             </tr>
 
-            @foreach (var torrent in (BitSharePortal.Models.TorrentListModel)ViewBag.ListaTorrents)
+            @foreach (var torrent in (List<BitSharePortal.Models.TorrentModel>)ViewBag.ListaTorrents)
             {
                 <tr>
                     <td><a href="Download/@torrent.IdTorrent.ToString()"><button class="downloadTorrentButton">Download .torrent</button></a></td>
-                    <td><a href="Detail/@torrent.IdTorrent.ToString()" title="Detalhes do torrent">@torrent.NomeTorrent</a></td>
-                    <td align="center">@torrent.TamanhoTorrent.ToString()</td>
+                    <td><a href="Detail/@torrent.IdTorrent.ToString()" title="Detalhes do torrent">@torrent.Nome</a></td>
+                    <td align="center">@torrent.Tamanho.ToString()</td>
                     <td align="center">@torrent.DataLancamento.ToString("dd/MM/yyyy hh:mm")</td>
                     <td align="center">@torrent.Downloads</td>
-                    <td align="center">@torrent.Seeders</td>
+                    <td align="center">@torrent.Seeds</td>
                     <td align="center">@torrent.Leechers</td>
                     <td align="center"><a href="#">@torrent.UsuarioLancamento</a></td>
                 </tr>

@@ -25,7 +25,79 @@ namespace BitShareData
             set;
         }
     
+        public virtual string NomeFilme
+        {
+            get;
+            set;
+        }
+    
         public virtual string Descricao
+        {
+            get;
+            set;
+        }
+    
+        public virtual string Imagens
+        {
+            get;
+            set;
+        }
+    
+        public virtual string ImagemCapaURL
+        {
+            get;
+            set;
+        }
+    
+        public virtual string TrailerYoutubeURL
+        {
+            get;
+            set;
+        }
+    
+        public virtual string Genero
+        {
+            get;
+            set;
+        }
+    
+        public virtual string AnoLancamento
+        {
+            get;
+            set;
+        }
+    
+        public virtual string Diretor
+        {
+            get;
+            set;
+        }
+    
+        public virtual string Atores
+        {
+            get;
+            set;
+        }
+    
+        public virtual string LinkIMDB
+        {
+            get;
+            set;
+        }
+    
+        public virtual string Resolucao
+        {
+            get;
+            set;
+        }
+    
+        public virtual string CodecAudio
+        {
+            get;
+            set;
+        }
+    
+        public virtual string CodecVideo
         {
             get;
             set;
@@ -49,6 +121,38 @@ namespace BitShareData
             }
         }
         private Torrent _torrent;
+    
+        public virtual ICollection<Legenda> Legendas
+        {
+            get
+            {
+                if (_legendas == null)
+                {
+                    var newCollection = new FixupCollection<Legenda>();
+                    newCollection.CollectionChanged += FixupLegendas;
+                    _legendas = newCollection;
+                }
+                return _legendas;
+            }
+            set
+            {
+                if (!ReferenceEquals(_legendas, value))
+                {
+                    var previousValue = _legendas as FixupCollection<Legenda>;
+                    if (previousValue != null)
+                    {
+                        previousValue.CollectionChanged -= FixupLegendas;
+                    }
+                    _legendas = value;
+                    var newValue = value as FixupCollection<Legenda>;
+                    if (newValue != null)
+                    {
+                        newValue.CollectionChanged += FixupLegendas;
+                    }
+                }
+            }
+        }
+        private ICollection<Legenda> _legendas;
 
         #endregion
 
@@ -64,6 +168,28 @@ namespace BitShareData
             if (Torrent != null)
             {
                 Torrent.DetalheTorrent = this;
+            }
+        }
+    
+        private void FixupLegendas(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (Legenda item in e.NewItems)
+                {
+                    item.DetalheTorrent = this;
+                }
+            }
+    
+            if (e.OldItems != null)
+            {
+                foreach (Legenda item in e.OldItems)
+                {
+                    if (ReferenceEquals(item.DetalheTorrent, this))
+                    {
+                        item.DetalheTorrent = null;
+                    }
+                }
             }
         }
 

@@ -1,5 +1,125 @@
-﻿@{
-    ViewBag.Title = "Upload";
-}
+﻿@model BitSharePortal.Models.TorrentUploadModel
+<style>
+    #botaoUpload {
+        font: 98% "Trebuchet MS", sans-serif;
+    }
 
-<h2>Upload</h2>
+    a {
+        font: 98% "Trebuchet MS", sans-serif;
+    }
+    .ui-autocomplete-loading {
+        background: white url('../Content/images/ui-anim_basic_16x16.gif') right center no-repeat;
+    }
+
+    .autocomplete-container {
+        border-bottom: dotted;
+        border-bottom-width: thin;
+        border-bottom-color: silver;
+        float: left;
+        width: 100%;
+        cursor: pointer;
+    }
+
+    .autocomplete-container-over {
+        background-color: silver;
+        border-bottom: dotted;
+        border-bottom-width: thin;
+        border-bottom-color: silver;
+        float: left;
+        width: 100%;
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    $(function () {
+       
+
+        function trataOver() {
+            alert('teste');
+            //$("#autocomplete-container").css('background-color', 'silver');
+        }
+
+        $("#botaoUpload").button({
+            icons: {
+                primary: "ui-icon-arrowthick-1-n"
+            }
+        });
+
+        $("#pesquisa_filmes").autocomplete({
+            source: "PesquisarFilmes/",
+            minLength: 4,
+            
+            select: function (event, ui) {
+                $("#pesquisa_filmes").val(ui.item.label);
+                return false;
+            }
+        }).data("autocomplete")._renderItem = function (ul, item) {
+            return $("<li>")
+                .data("item.autocomplete", item)
+                .append("<a><img src=\"" + item.image + "\"/>" + item.label + "</a>")
+                .appendTo(ul);
+        };
+
+
+
+
+    });
+</script>
+
+<div id="torrentsContainer" class="borderedDiv">
+    <div class="ui-widget-header padded">Lançar novo torrent</div>
+    @using (Html.BeginForm("Upload", "Torrents", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <div class="padded">
+            <center>URL tracker: http://tracker.bit-share.net/announce.aspx </center>
+            <br />
+            <table width="100%">
+                <tr>
+                    <td width="20%">Arquivo:
+                    </td>
+                    <td>
+                        <input type="file" name="uploadFile" style="width: 400px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Nome do Torrent:
+                    </td>
+                    <td>
+                        <input id="pesquisa_filmes" style="width: 400px;" />
+                        @Html.TextBoxFor(m => m.Nome, new { @style = "width:400px;" })
+                        <br />@Html.ValidationMessageFor(m => m.Nome)
+                    </td>
+                </tr>
+                <tr>
+                    <td>Categoria:
+                    </td>
+                    <td>
+                        @Html.DropDownListFor(m => m.Categoria, new SelectList((List<SelectListItem>)ViewBag.ListaCategoria, "Value", "Text"), new { @style = "width:200px;" })
+                        <br />@Html.ValidationMessageFor(m => m.Categoria)
+                    </td>
+                </tr>
+                <tr>
+                    <td>Descrição:
+                    </td>
+                    <td>
+                        @Html.TextAreaFor(m => m.Descricao, new { @style = "width:100%;" })
+                        <br />@Html.ValidationMessageFor(m => m.Descricao)
+                    </td>
+                </tr>
+                <tr>
+                    <td>Imagens (1 URL por linha):
+                    </td>
+                    <td>
+                        @Html.TextAreaFor(m => m.ImagensURL, new { @style = "width:600px;" })
+                        <br />@Html.ValidationMessageFor(m => m.ImagensURL)
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center">
+                        <button id="botaoUpload">Enviar Torrent</button></td>
+                </tr>
+            </table>
+        </div>
+    }
+</div>

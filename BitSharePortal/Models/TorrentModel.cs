@@ -1,17 +1,18 @@
 ﻿using BitShareData;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BitSharePortal.Models
 {
     public class TorrentModel
     {
         public int IdTorrent { get; set; }
-        public string NomeTorrent { get; set; }
-        public double TamanhoTorrent { get; set; }
+        public string Nome { get; set; }
+        public double Tamanho { get; set; }
         public DateTime DataLancamento { get; set; }
         public int Downloads { get; set; }
-        public int Seeders { get; set; }
+        public int Seeds { get; set; }
         public int Leechers { get; set; }
         public string UsuarioLancamento { get; set; }
     }
@@ -23,6 +24,9 @@ namespace BitSharePortal.Models
         /// </summary>
         public void CarregarTodosTorrents()
         {
+
+
+
             using (var repositorio = new DataRepository<Torrent>())
             {
                 var torrents = repositorio.GetAll();
@@ -31,11 +35,11 @@ namespace BitSharePortal.Models
                 {
                     var torrentModel = new TorrentModel();
                     torrentModel.IdTorrent = torrent.IdTorrent;
-                    torrentModel.NomeTorrent = torrent.Nome;
-                    torrentModel.TamanhoTorrent = torrent.Tamanho;
+                    torrentModel.Nome = torrent.Nome;
+                    torrentModel.Tamanho = torrent.Tamanho;
                     torrentModel.DataLancamento = torrent.DataLancamento;
                     torrentModel.Downloads = 0; //TODO: trazer a quantidade de snatches
-                    torrentModel.Seeders = torrent.Seeds;
+                    torrentModel.Seeds = torrent.Seeds;
                     torrentModel.Leechers = torrent.Leechers;
                     torrentModel.UsuarioLancamento = torrent.UsuarioLancamento.Nome;
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Objects;
 using System.Linq;
 
@@ -30,6 +31,12 @@ namespace BitShareData
         /// The context object for the database
         /// </summary>
         private ObjectContext _context;
+
+        public ObjectContext Context
+        {
+            get { return _context; }
+            set { _context = value; }
+        }
 
         /// <summary>
         /// The IObjectSet that represents the current entity.
@@ -161,6 +168,11 @@ namespace BitShareData
         public void SaveChanges()
         {
             _context.SaveChanges();
+        }
+
+        public object GetObjectByKey(EntityKey key)
+        {
+            return _context.GetObjectByKey(key);
         }
 
         /// <summary>

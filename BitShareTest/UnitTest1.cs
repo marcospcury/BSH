@@ -1,6 +1,8 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using BitShareData;
+using BitSharePortal.Models;
+using System.Net;
 
 namespace BitShareTest
 {
@@ -14,10 +16,10 @@ namespace BitShareTest
 
             var user = new Usuario();
             user.IdUsuario = 0;
-            user.Nome = "Marcos Cury";
+            user.Nome = "marcospcury";
             user.Email = "marcospcury@gmail.com";
             user.PassKey = "54bfc949-993a-4c41-88b5-00009d598972"; //Guid.NewGuid().ToString();
-            user.Senha = "214196";
+            user.Senha = "12345";
             user.Categoria = "Owner";
             user.Ratio = 0;
             user.Downloaded = 0;
@@ -43,6 +45,15 @@ namespace BitShareTest
             //repo.SaveChanges();
             //MonoTorrent.Common.Torrent torr = MonoTorrent.Common.Torrent.Load("C:\\Users\\Cury\\Desktop\\Torrents To Go\\The Mentalist S05E09 HDTV XviD-SaM.torrent");
             
+            var filme = new Imdb();
+            var filmes = filme.PesquisarFilmes("espera de um milagre");
+
+
+            //filme.FilmePorId("0350804");
+            //var act = filme.Atores;
+            //string a = filme.PosterURL;
+            //WebClient client = new WebClient();
+            //client.DownloadFile(a, "E:\\imagem.jpg");
         }
     }
 }
