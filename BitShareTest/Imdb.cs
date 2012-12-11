@@ -10,15 +10,17 @@ namespace BitSharePortal.Models
     {
         private List<Ator> _atores;
 
+        private HtmlAgilityPack.HtmlDocument _markup;
+
         public Imdb()
         {
-            
+
         }
 
         public bool Pesquisar(string query)
         {
             HtmlWeb web = new HtmlWeb();
-            _markup = web.Load("http://www.imdb.com/find?s=all&q=" + query);
+            _markup = web.Load("http://www.imdb.com/find?s=tt&q=" + query);
 
             if (!IsMoviePage())
             {
@@ -36,31 +38,39 @@ namespace BitSharePortal.Models
         public List<FilmePesquisa> PesquisarFilmes(string query)
         {
             HtmlWeb web = new HtmlWeb();
-            _markup = web.Load("http://www.imdb.com/find?s=all&q=" + query);
+            _markup = web.Load("http://www.imdb.com/find?s=tt&q=" + query);
 
             var retorno = new List<FilmePesquisa>();
 
-            if (!IsMoviePage())
+            try
             {
-                var filmes = _markup.DocumentNode.SelectNodes("//td[contains(@class, 'result_text')]");
-                var thumbs = _markup.DocumentNode.SelectNodes("//td[contains(@class, 'primary_photo')]/a/img");
-
-                int indice = 0;
-                foreach (var filme in filmes)
+                if (!IsMoviePage())
                 {
-                    retorno.Add(new FilmePesquisa() { Nome = filme.InnerText, URLImagem = thumbs[indice].Attributes["src"].Value });
+                    var filmes = _markup.DocumentNode.SelectNodes("//td[contains(@class, 'result_text')]");
+                    var linkFilmes = _markup.DocumentNode.SelectNodes("//td[contains(@class, 'result_text')]/a");
+                    var thumbs = _markup.DocumentNode.SelectNodes("//td[contains(@class, 'primary_photo')]/a/img");
 
-                    if (thumbs.Count - 1 == indice)
+                    int indice = 0;
+                    foreach (var filme in filmes)
                     {
-                        break;
-                    }
+                        retorno.Add(new FilmePesquisa() { Nome = filme.InnerText, URLImagem = thumbs[indice].Attributes["src"].Value, URLFilme = "http://www.imdb.com/" + linkFilmes[indice].Attributes["href"].Value.Substring(0, linkFilmes[indice].Attributes["href"].Value.IndexOf("?ref")) });
 
-                    indice++;
+                        if (thumbs.Count - 1 == indice)
+                        {
+                            break;
+                        }
+
+                        indice++;
+                    }
+                }
+                else
+                {
+                    retorno.Add(new FilmePesquisa() { Nome = "Match" });
                 }
             }
-            else
+            catch (Exception)
             {
-                retorno.Add(new FilmePesquisa() { Nome = "Match" });
+
             }
 
             return retorno;
@@ -78,7 +88,7 @@ namespace BitSharePortal.Models
             _markup = web.Load(URL);
         }
 
-        public List<Ator> Atores 
+        public List<Ator> Atores
         {
             get
             {
@@ -90,8 +100,6 @@ namespace BitSharePortal.Models
                 return _atores;
             }
         }
-
-        private HtmlAgilityPack.HtmlDocument _markup;
 
         private bool IsMoviePage()
         {
@@ -156,7 +164,36 @@ namespace BitSharePortal.Models
             }
         }
 
-        public void CarregarAtores()
+        public string Duracao
+        {
+            get
+            {
+                HtmlNode duracao = _markup.DocumentNode.SelectSingleNode("//time[contains(@itemprop, 'duration')]");
+                return duracao == null ? String.Empty : duracao.InnerText;
+            }
+        }
+
+        public string Generos
+        {
+            get
+            {
+                string retorno = "";
+                var generos = _markup.DocumentNode.SelectNodes("//a[contains(@itemprop, 'genre')]");
+
+                foreach (var genero in generos)
+                {
+                    retorno += genero.InnerText + " | ";
+                }
+
+                if(retorno != "")
+                {
+                    retorno = retorno.Substring(0, retorno.Length - 3);
+                }
+                return retorno;
+            }
+        }
+
+        private void CarregarAtores()
         {
             HtmlNodeCollection actors = _markup.DocumentNode.SelectNodes("//td[contains(@class, 'name')]/a");
             HtmlNodeCollection roles = _markup.DocumentNode.SelectNodes("//td[contains(@class, 'character')]/div");
@@ -173,22 +210,8 @@ namespace BitSharePortal.Models
                 }
 
                 Atores.Add(new Ator() { Nome = HttpUtility.HtmlDecode(ator.InnerText.Replace("\n", "")), Papel = HttpUtility.HtmlDecode(personagem.InnerText.Replace("\n", "").Trim()), URLImdb = URLImdb, IdImdb = IDImdb });
-                
-                indice++;
-            }
-        }
 
-        public string Genre
-        {
-            get
-            {
-                HtmlNode header = _markup.DocumentNode.SelectSingleNode("//div[contains(@class, 'info')]/h5[contains(., 'Genre:')]");
-                if (header != null)
-                {
-                    HtmlNode genre = header.ParentNode.SelectSingleNode(".//div[contains(@class, 'info-content')]");
-                    if (genre != null) return genre.InnerText.Replace("See more&nbsp;&raquo;", String.Empty).Trim();
-                }
-                return String.Empty;
+                indice++;
             }
         }
 
@@ -196,8 +219,15 @@ namespace BitSharePortal.Models
         {
             get
             {
-                HtmlNode plot = _markup.DocumentNode.SelectSingleNode("//p");
-                return plot == null ? String.Empty : plot.InnerText;
+                HtmlNode plot = _markup.DocumentNode.SelectSingleNode("//p/em[contains(@class, 'nobr')]").ParentNode;
+                string retorno = plot == null ? String.Empty : plot.InnerText;
+
+                if (retorno.Contains("Written by"))
+                {
+                    retorno = retorno.Substring(0, retorno.IndexOf("Written by"));
+                }
+
+                return HttpUtility.HtmlDecode(retorno);
             }
         }
 
@@ -217,12 +247,18 @@ namespace BitSharePortal.Models
             public string URLFoto { get; set; }
             public string Nome { get; set; }
             public string Papel { get; set; }
+
+            public override string ToString()
+            {
+                return String.Format("{0} - {1}", Nome, Papel);
+            }
         }
 
         internal class FilmePesquisa
         {
             public string URLImagem { get; set; }
             public string Nome { get; set; }
+            public string URLFilme { get; set; }
         }
     }
 }

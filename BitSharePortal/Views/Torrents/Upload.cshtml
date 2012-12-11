@@ -1,12 +1,13 @@
 ﻿@model BitSharePortal.Models.TorrentUploadModel
 <style>
-    #botaoUpload {
+    #botaoUpload, #botaoIMDB {
         font: 98% "Trebuchet MS", sans-serif;
     }
 
     a {
         font: 98% "Trebuchet MS", sans-serif;
     }
+
     .ui-autocomplete-loading {
         background: white url('../Content/images/ui-anim_basic_16x16.gif') right center no-repeat;
     }
@@ -29,16 +30,17 @@
         width: 100%;
         cursor: pointer;
     }
+
+    #loading {
+        float: left;
+        font-size: 11px;
+        margin-left: 10px;
+        display: none;
+    }
 </style>
 
 <script>
     $(function () {
-       
-
-        function trataOver() {
-            alert('teste');
-            //$("#autocomplete-container").css('background-color', 'silver');
-        }
 
         $("#botaoUpload").button({
             icons: {
@@ -46,12 +48,70 @@
             }
         });
 
+        jQuery(document).ajaxStart(function () {
+            $("#loading").show();
+            $("#detalhesFilme").hide();
+        })
+
+        jQuery(document).ajaxStop(function () {
+            $("#loading").hide();
+        })
+
+        $("#botaoIMDB").button({
+            icons: {
+                primary: "ui-icon-check"
+            }
+        }).click(function () {
+
+            CarregarFilme($("#url_imdb").val());
+            return false;
+        });
+
+        function CarregarFilme(IdImdb) {
+            $("#loading").show();
+            $("#detalhesFilme").hide();
+            $.ajax({
+                url: 'http://www.bit-share-rest.net/Movies/Get/?id=' + IdImdb.replace("http://www.imdb.com/title/tt", "").replace("/", ""),
+                dataType: "jsonp",
+                success: function (data) {
+                    $("#posterFilme").attr("src", data.URLPoster);
+                    $("#posterFilme").attr("alt", data.Titulo);
+                    $("#posterFilme").attr("title", data.Titulo);
+                    $("#pesquisa_filmes").val(data.Titulo);
+                    $("#tituloFilme").text(data.Titulo);
+                    $("#diretorFilme").text(data.Diretor);
+                    $("#anoLancamento").text(data.AnoLancamento);
+                    $("#duracaoFilme").text(data.Duracao);
+                    $("#sinopseFilme").text(data.Sinopse);
+                    $("#castFilme").html(data.Cast);
+                    $("#generoFilme").text(data.Generos);
+                    $("#detalhesFilme").show("blind");
+                    $("#loading").hide();
+                }
+            });
+        }
+
         $("#pesquisa_filmes").autocomplete({
-            source: "PesquisarFilmes/",
+            source:function( request, response ) {
+                $.ajax({
+                    url: "http://www.bit-share-rest.net/Movies/Search/?term=" + request.term,
+                    dataType: "jsonp",
+                    success: function (data) {
+                        response( $.map( data, function( item ) {
+                            return {
+                                label: item.label,
+                                value: item.value,
+                                image: item.image,
+                                imdb: item.imdb
+                            }
+                        }));
+                    }
+                });
+            },
             minLength: 4,
-            
             select: function (event, ui) {
-                $("#pesquisa_filmes").val(ui.item.label);
+                $("#url_imdb").val(ui.item.imdb);
+                CarregarFilme($("#url_imdb").val());
                 return false;
             }
         }).data("autocomplete")._renderItem = function (ul, item) {
@@ -62,8 +122,7 @@
         };
 
 
-
-
+        $("#detalhesFilme").hide();
     });
 </script>
 
@@ -83,12 +142,43 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>Nome do Torrent:
+                    <td>Filme:
                     </td>
-                    <td>
+                    <td>Pesquisar:
                         <input id="pesquisa_filmes" style="width: 400px;" />
-                        @Html.TextBoxFor(m => m.Nome, new { @style = "width:400px;" })
-                        <br />@Html.ValidationMessageFor(m => m.Nome)
+                        ou
+                        <br />
+                        Link IMDB:
+                        <input id="url_imdb" style="width: 400px;" />
+                        <button id="botaoIMDB">Carregar informações</button>
+                        <br />
+                        <div id="loading">Aguarde...<img src="../Content/images/ui-anim_basic_16x16.gif"/></div>
+                        <div id="detalhesFilme" class="borderedDiv">
+                            <div class="ui-widget-header padded">Informações do Filme</div>
+                            <div class="padded">
+                                <table width="100%">
+                                    <tr>
+                                        <td width="224" align="center">
+                                            <img id="posterFilme" src="" style="max-width: 214px; max-height: 317px;" height="317" alt="" title="">
+                                            <br />
+                                            <b><span id="tituloFilme"></span></b>
+                                            <br />
+                                            Diretor: <span id="diretorFilme"></span>
+                                            <br />
+                                            Ano de Lançamento: <span id="anoLancamento"></span>
+                                            <br />
+                                            Duração: <span id="duracaoFilme"></span>
+                                            <br />
+                                            Gênero: <span id="generoFilme"></span>
+                                        </td>
+                                        <td>
+                                            <div class="padded" style="margin-top: 5px; text-align: justify;"><span id="sinopseFilme"></span></div>
+                                            <div class="padded" style="margin-top: 5px;"><span id="castFilme"></span></div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 <tr>

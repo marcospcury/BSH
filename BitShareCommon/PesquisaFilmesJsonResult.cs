@@ -10,5 +10,6 @@ namespace BitSharePortal.Models
         public string label { get; set; }
         public string value { get; set; }
         public string image { get; set; }
+        public string imdb { get; set; }
     }
 }

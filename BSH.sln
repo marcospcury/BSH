@@ -15,6 +15,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitShareManager", "BitShare
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitSharePortal", "BitSharePortal\BitSharePortal.csproj", "{97E5346E-5B79-4C84-97AD-B41FED3C5009}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImdbRest", "ImdbRest\ImdbRest.csproj", "{A8E0DAFD-0E78-4588-A285-F9038DF73CDE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitShareCommon", "BitShareCommon\BitShareCommon.csproj", "{98F24EEE-422F-4578-BCC6-0BE4D4697D16}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +53,14 @@ Global
 		{97E5346E-5B79-4C84-97AD-B41FED3C5009}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97E5346E-5B79-4C84-97AD-B41FED3C5009}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97E5346E-5B79-4C84-97AD-B41FED3C5009}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8E0DAFD-0E78-4588-A285-F9038DF73CDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8E0DAFD-0E78-4588-A285-F9038DF73CDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8E0DAFD-0E78-4588-A285-F9038DF73CDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8E0DAFD-0E78-4588-A285-F9038DF73CDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98F24EEE-422F-4578-BCC6-0BE4D4697D16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98F24EEE-422F-4578-BCC6-0BE4D4697D16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98F24EEE-422F-4578-BCC6-0BE4D4697D16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98F24EEE-422F-4578-BCC6-0BE4D4697D16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

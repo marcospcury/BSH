@@ -9,7 +9,7 @@ namespace BitShareData
     /// </summary>
     public static class Connection
     {
-        private static string connectionString = "data source=108.175.158.161;initial catalog=BitShareDB;user id=bitsharer;password=iwillshare;";
+        private static string connectionString = "data source=bit-share.net;initial catalog=BitShareDB;user id=bitsharer;password=iwillshare;";
 
         private static SqlConnection connectionSQL;
 

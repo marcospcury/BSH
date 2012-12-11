@@ -106,9 +106,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Imdb.cs" />
     <Compile Include="Models\LoginModel.cs" />
-    <Compile Include="Models\PesquisaFilmesJsonResult.cs" />
     <Compile Include="Models\TorrentFilterModel.cs" />
     <Compile Include="Models\TorrentModel.cs" />
     <Compile Include="Models\TorrentUploadModel.cs" />
@@ -143,6 +141,7 @@
     <Content Include="Content\Images\steel.jpg" />
     <Content Include="Content\Images\steel_honeycomb.jpg" />
     <Content Include="Content\Images\steel_honeycomb.png" />
+    <Content Include="Content\Images\steel_honeycombTile.jpg" />
     <Content Include="Content\Images\ui-anim_basic_16x16.gif" />
     <Content Include="Content\Images\up_arrow.png" />
     <Content Include="Content\js\jquery-1.8.3.js" />
@@ -257,6 +256,10 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BitShareCommon\BitShareCommon.csproj">
+      <Project>{98f24eee-422f-4578-bcc6-0be4d4697d16}</Project>
+      <Name>BitShareCommon</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BitShareData\BitShareData\BitShareData.csproj">
       <Project>{01a5ae83-0582-4c46-ad26-7f00cea80f5f}</Project>
       <Name>BitShareData</Name>

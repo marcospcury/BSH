@@ -27,7 +27,7 @@ namespace BitSharePortal.Controllers
         [HttpPost]
         public ActionResult Browse(TorrentFilterModel filtro)
         {
-            CarregarListaCategoria();
+            ViewBag.ListaCategoria = CarregarListaCategoria();
 
             var listaTorrents = Connection.ExecuteQuery<TorrentModel>(queryBase);
             ViewBag.ListaTorrents = listaTorrents;
@@ -37,7 +37,7 @@ namespace BitSharePortal.Controllers
 
         public ActionResult Browse()
         {
-            CarregarListaCategoria();
+            ViewBag.ListaCategoria = CarregarListaCategoria();
 
             var listaTorrents = Connection.ExecuteQuery<TorrentModel>(queryBase);
             ViewBag.ListaTorrents = listaTorrents;
@@ -53,7 +53,7 @@ namespace BitSharePortal.Controllers
         [HttpPost]
         public ActionResult Upload(HttpPostedFileBase uploadFile, TorrentUploadModel model)
         {
-            CarregarListaCategoria();
+            ViewBag.ListaCategoria = CarregarListaCategoria();
 
             if (ModelState.IsValid)
             {
@@ -109,23 +109,9 @@ namespace BitSharePortal.Controllers
             return View(model);
         }
 
-        public ActionResult PesquisarFilmes(string term)
-        {
-            var resultado = new List<PesquisaFilmesJsonResult>();
-            var pesquisaFilmes = new Imdb();
-            var filmesResult = pesquisaFilmes.PesquisarFilmes(term).Take(10);
-
-            foreach (var filmeResult in filmesResult)
-            {
-                resultado.Add(new PesquisaFilmesJsonResult() { label = filmeResult.Nome, image = filmeResult.URLImagem });
-            }
-
-            return Json(resultado, JsonRequestBehavior.AllowGet);
-        }
-
         public ActionResult Upload()
         {
-            CarregarListaCategoria();
+            ViewBag.ListaCategoria = CarregarListaCategoria();
             return View();
         }
 
@@ -154,15 +140,6 @@ namespace BitSharePortal.Controllers
             }
         }
 
-        private void CarregarListaCategoria()
-        {
-            ListaCategoria.Add(new SelectListItem() { Value = "", Text = "Selecione", Selected = true });
-            ListaCategoria.Add(new SelectListItem() { Value = "Filmes", Text = "Filmes" });
-            ListaCategoria.Add(new SelectListItem() { Value = "Séries", Text = "Séries" });
-            ListaCategoria.Add(new SelectListItem() { Value = "Games", Text = "Games" });
-            ListaCategoria.Add(new SelectListItem() { Value = "XXX", Text = "XXX" });
-
-            ViewBag.ListaCategoria = ListaCategoria;
-        }
+       
     }
 }

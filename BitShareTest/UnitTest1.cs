@@ -46,11 +46,11 @@ namespace BitShareTest
             //MonoTorrent.Common.Torrent torr = MonoTorrent.Common.Torrent.Load("C:\\Users\\Cury\\Desktop\\Torrents To Go\\The Mentalist S05E09 HDTV XviD-SaM.torrent");
             
             var filme = new Imdb();
-            var filmes = filme.PesquisarFilmes("espera de um milagre");
+            filme.FilmePorUrl("http://www.imdb.com/title/tt0118583/");
 
 
             //filme.FilmePorId("0350804");
-            //var act = filme.Atores;
+            var act = filme.Sinopse;
             //string a = filme.PosterURL;
             //WebClient client = new WebClient();
             //client.DownloadFile(a, "E:\\imagem.jpg");
