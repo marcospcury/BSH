@@ -15,23 +15,17 @@ using System.Collections.Specialized;
 
 namespace BitShareData
 {
-    public partial class Legenda
+    public partial class Papel
     {
         #region Primitive Properties
     
-        public virtual int IdLegenda
+        public virtual int IdPapel
         {
             get;
             set;
         }
     
-        public virtual string Arquivo
-        {
-            get;
-            set;
-        }
-    
-        public virtual string Idioma
+        public virtual string NomePersonagem
         {
             get;
             set;
@@ -55,6 +49,21 @@ namespace BitShareData
             }
         }
         private Filme _filme;
+    
+        public virtual Ator Ator
+        {
+            get { return _ator; }
+            set
+            {
+                if (!ReferenceEquals(_ator, value))
+                {
+                    var previousValue = _ator;
+                    _ator = value;
+                    FixupAtor(previousValue);
+                }
+            }
+        }
+        private Ator _ator;
 
         #endregion
 
@@ -62,16 +71,32 @@ namespace BitShareData
     
         private void FixupFilme(Filme previousValue)
         {
-            if (previousValue != null && previousValue.Legendas.Contains(this))
+            if (previousValue != null && previousValue.Papels.Contains(this))
             {
-                previousValue.Legendas.Remove(this);
+                previousValue.Papels.Remove(this);
             }
     
             if (Filme != null)
             {
-                if (!Filme.Legendas.Contains(this))
+                if (!Filme.Papels.Contains(this))
                 {
-                    Filme.Legendas.Add(this);
+                    Filme.Papels.Add(this);
+                }
+            }
+        }
+    
+        private void FixupAtor(Ator previousValue)
+        {
+            if (previousValue != null && previousValue.Papels.Contains(this))
+            {
+                previousValue.Papels.Remove(this);
+            }
+    
+            if (Ator != null)
+            {
+                if (!Ator.Papels.Contains(this))
+                {
+                    Ator.Papels.Add(this);
                 }
             }
         }

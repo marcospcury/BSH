@@ -46,6 +46,12 @@ namespace BitSharePortal
                "{controller}/{action}/{id}", // URL with parameters
                new { controller = "Users", action = "Profile", id = UrlParameter.Optional } // Parameter defaults
            );
+
+            routes.MapRoute(
+              "ListaTorrentsFilme", // Route name
+              "{controller}/{action}/{id}", // URL with parameters
+              new { controller = "Torrents", action = "ListaTorrentsFilme", id = UrlParameter.Optional } // Parameter defaults
+          );
         }
 
         protected void Application_Start()

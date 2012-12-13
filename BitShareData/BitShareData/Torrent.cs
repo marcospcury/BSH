@@ -96,6 +96,42 @@ namespace BitShareData
             get;
             set;
         }
+    
+        public virtual string Resolucao
+        {
+            get;
+            set;
+        }
+    
+        public virtual string Audio
+        {
+            get;
+            set;
+        }
+    
+        public virtual string CodecAudio
+        {
+            get;
+            set;
+        }
+    
+        public virtual string CodecVideo
+        {
+            get;
+            set;
+        }
+    
+        public virtual bool Dublado
+        {
+            get;
+            set;
+        }
+    
+        public virtual string Observacoes
+        {
+            get;
+            set;
+        }
 
         #endregion
 
@@ -212,20 +248,20 @@ namespace BitShareData
         }
         private ICollection<TorrentLeech> _torrentLeeches;
     
-        public virtual DetalheTorrent DetalheTorrent
+        public virtual Filme Filme
         {
-            get { return _detalheTorrent; }
+            get { return _filme; }
             set
             {
-                if (!ReferenceEquals(_detalheTorrent, value))
+                if (!ReferenceEquals(_filme, value))
                 {
-                    var previousValue = _detalheTorrent;
-                    _detalheTorrent = value;
-                    FixupDetalheTorrent(previousValue);
+                    var previousValue = _filme;
+                    _filme = value;
+                    FixupFilme(previousValue);
                 }
             }
         }
-        private DetalheTorrent _detalheTorrent;
+        private Filme _filme;
 
         #endregion
 
@@ -247,16 +283,19 @@ namespace BitShareData
             }
         }
     
-        private void FixupDetalheTorrent(DetalheTorrent previousValue)
+        private void FixupFilme(Filme previousValue)
         {
-            if (previousValue != null && ReferenceEquals(previousValue.Torrent, this))
+            if (previousValue != null && previousValue.Torrents.Contains(this))
             {
-                previousValue.Torrent = null;
+                previousValue.Torrents.Remove(this);
             }
     
-            if (DetalheTorrent != null)
+            if (Filme != null)
             {
-                DetalheTorrent.Torrent = this;
+                if (!Filme.Torrents.Contains(this))
+                {
+                    Filme.Torrents.Add(this);
+                }
             }
         }
     

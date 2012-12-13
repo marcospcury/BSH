@@ -12,9 +12,11 @@ namespace BitSharePortal.Models
 
         private List<Ator> _atores;
 
+        private bool PesquisaCompleta = false;
+
         private HtmlAgilityPack.HtmlDocument _markup;
 
-        public Imdb()
+        public Imdb(bool pesquisaCompleta)
         {
             GenerosImdb = new Dictionary<string, string>();
             GenerosImdb.Add("Action", "Ação");
@@ -34,7 +36,7 @@ namespace BitSharePortal.Models
             GenerosImdb.Add("Drama", "Drama");
             GenerosImdb.Add("Animation", "Animação");
             GenerosImdb.Add("Sci-Fi", "Ficção Científica");
-            GenerosImdb.Add("Thrillers", "Suspense");
+            GenerosImdb.Add("Thriller", "Suspense");
             GenerosImdb.Add("Family", "Familia");
             GenerosImdb.Add("Romance", "Romance");
             GenerosImdb.Add("Horror", "Terror");
@@ -44,12 +46,14 @@ namespace BitSharePortal.Models
             GenerosImdb.Add("Music", "Música");
             GenerosImdb.Add("News", "Notícia");
             GenerosImdb.Add("Film-Noir", "Noir");
+
+            PesquisaCompleta = pesquisaCompleta;
         }
 
         public bool Pesquisar(string query)
         {
             HtmlWeb web = new HtmlWeb();
-            
+
             _markup = web.Load("http://www.imdb.com/find?s=tt&q=" + query);
 
             if (!IsMoviePage())
@@ -110,6 +114,14 @@ namespace BitSharePortal.Models
         {
             HtmlWeb web = new HtmlWeb();
             _markup = web.Load("http://www.imdb.com/title/tt" + ID);
+        }
+
+        public string URLFilme
+        {
+            get
+            {
+                return String.Format("http://www.imdb.com/title/tt{0}/", Id);
+            }
         }
 
         public void FilmePorUrl(string URL)
@@ -241,7 +253,24 @@ namespace BitSharePortal.Models
                         personagem = roles[indice].SelectSingleNode("//a");
                     }
 
-                    Atores.Add(new Ator() { Nome = HttpUtility.HtmlDecode(ator.InnerText.Replace("\n", "")), Papel = HttpUtility.HtmlDecode(personagem.InnerText.Replace("\n", "").Trim()), URLImdb = URLImdb, IdImdb = IDImdb });
+                    String URLPhoto = "";
+
+                    if (PesquisaCompleta)
+                    {
+                        //------------------------------- Carrega a foto do ator
+                        var webAtor = new HtmlWeb();
+                        var _markupAtor = webAtor.Load(URLImdb);
+                        var foto = _markupAtor.DocumentNode.SelectSingleNode("//td[contains(@id, 'img_primary')]/a/img");
+
+                        if (foto != null)
+                        {
+                            URLPhoto = foto.Attributes["src"].Value;
+                        }
+
+                        //-------------------------------
+                    }
+
+                    Atores.Add(new Ator() { Nome = HttpUtility.HtmlDecode(ator.InnerText.Replace("\n", "")), Papel = HttpUtility.HtmlDecode(personagem.InnerText.Replace("\n", "").Trim()), URLImdb = URLImdb, IdImdb = IDImdb, URLFoto = URLPhoto });
                 }
                 indice++;
             }

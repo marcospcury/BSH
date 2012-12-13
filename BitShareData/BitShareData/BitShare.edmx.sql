@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, and Azure
 -- --------------------------------------------------
--- Date Created: 12/05/2012 18:13:40
+-- Date Created: 12/13/2012 00:15:48
 -- Generated from EDMX file: C:\Users\Cury\Documents\GitHub\BSH\BitShareData\BitShareData\BitShare.edmx
 -- --------------------------------------------------
 
@@ -35,11 +35,20 @@ GO
 IF OBJECT_ID(N'[dbo].[FK_UsuarioTorrentLeech]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[TorrentLeeches] DROP CONSTRAINT [FK_UsuarioTorrentLeech];
 GO
-IF OBJECT_ID(N'[dbo].[FK_TorrentDetalheTorrent]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Torrents] DROP CONSTRAINT [FK_TorrentDetalheTorrent];
-GO
 IF OBJECT_ID(N'[dbo].[FK_UsuarioConvite]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Convites] DROP CONSTRAINT [FK_UsuarioConvite];
+GO
+IF OBJECT_ID(N'[dbo].[FK_FilmePapel]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Papeis] DROP CONSTRAINT [FK_FilmePapel];
+GO
+IF OBJECT_ID(N'[dbo].[FK_AtorPapel]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Papeis] DROP CONSTRAINT [FK_AtorPapel];
+GO
+IF OBJECT_ID(N'[dbo].[FK_FilmeTorrent]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Torrents] DROP CONSTRAINT [FK_FilmeTorrent];
+GO
+IF OBJECT_ID(N'[dbo].[FK_FilmeLegenda]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Legendas] DROP CONSTRAINT [FK_FilmeLegenda];
 GO
 
 -- --------------------------------------------------
@@ -64,9 +73,6 @@ GO
 IF OBJECT_ID(N'[dbo].[TokensRegistro]', 'U') IS NOT NULL
     DROP TABLE [dbo].[TokensRegistro];
 GO
-IF OBJECT_ID(N'[dbo].[DetalheTorrents]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[DetalheTorrents];
-GO
 IF OBJECT_ID(N'[dbo].[EventosAnnounce]', 'U') IS NOT NULL
     DROP TABLE [dbo].[EventosAnnounce];
 GO
@@ -75,6 +81,18 @@ IF OBJECT_ID(N'[dbo].[Clients]', 'U') IS NOT NULL
 GO
 IF OBJECT_ID(N'[dbo].[Convites]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Convites];
+GO
+IF OBJECT_ID(N'[dbo].[Legendas]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Legendas];
+GO
+IF OBJECT_ID(N'[dbo].[Atores]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Atores];
+GO
+IF OBJECT_ID(N'[dbo].[Filmes]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Filmes];
+GO
+IF OBJECT_ID(N'[dbo].[Papeis]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Papeis];
 GO
 
 -- --------------------------------------------------
@@ -117,8 +135,14 @@ CREATE TABLE [dbo].[Torrents] (
     [Downloads] int  NOT NULL,
     [Categoria] nvarchar(max)  NOT NULL,
     [Arquivo] nvarchar(max)  NOT NULL,
+    [Resolucao] nvarchar(max)  NOT NULL,
+    [Audio] nvarchar(max)  NOT NULL,
+    [CodecAudio] nvarchar(max)  NOT NULL,
+    [CodecVideo] nvarchar(max)  NOT NULL,
+    [Dublado] bit  NOT NULL,
+    [Observacoes] nvarchar(max)  NOT NULL,
     [UsuarioLancamento_IdUsuario] int  NOT NULL,
-    [DetalheTorrent_IdDetalheTorrent] int  NOT NULL
+    [Filme_IdFilme] int  NOT NULL
 );
 GO
 
@@ -161,25 +185,6 @@ CREATE TABLE [dbo].[TokensRegistro] (
 );
 GO
 
--- Creating table 'DetalheTorrents'
-CREATE TABLE [dbo].[DetalheTorrents] (
-    [IdDetalheTorrent] int IDENTITY(1,1) NOT NULL,
-    [NomeFilme] nvarchar(max)  NOT NULL,
-    [Descricao] nvarchar(max)  NOT NULL,
-    [Imagens] nvarchar(max)  NOT NULL,
-    [ImagemCapaURL] nvarchar(max)  NOT NULL,
-    [TrailerYoutubeURL] nvarchar(max)  NOT NULL,
-    [Genero] nvarchar(max)  NOT NULL,
-    [AnoLancamento] nvarchar(max)  NOT NULL,
-    [Diretor] nvarchar(max)  NOT NULL,
-    [Atores] nvarchar(max)  NOT NULL,
-    [LinkIMDB] nvarchar(max)  NOT NULL,
-    [Resolucao] nvarchar(max)  NOT NULL,
-    [CodecAudio] nvarchar(max)  NOT NULL,
-    [CodecVideo] nvarchar(max)  NOT NULL
-);
-GO
-
 -- Creating table 'EventosAnnounce'
 CREATE TABLE [dbo].[EventosAnnounce] (
     [IdEventoAnnounce] int IDENTITY(1,1) NOT NULL,
@@ -216,7 +221,40 @@ CREATE TABLE [dbo].[Legendas] (
     [IdLegenda] int IDENTITY(1,1) NOT NULL,
     [Arquivo] nvarchar(max)  NOT NULL,
     [Idioma] nvarchar(max)  NOT NULL,
-    [DetalheTorrent_IdDetalheTorrent] int  NOT NULL
+    [Filme_IdFilme] int  NOT NULL
+);
+GO
+
+-- Creating table 'Atores'
+CREATE TABLE [dbo].[Atores] (
+    [IdAtor] int IDENTITY(1,1) NOT NULL,
+    [Nome] nvarchar(max)  NOT NULL,
+    [IdImdb] nvarchar(max)  NOT NULL,
+    [URLFoto] nvarchar(max)  NOT NULL
+);
+GO
+
+-- Creating table 'Filmes'
+CREATE TABLE [dbo].[Filmes] (
+    [IdFilme] int IDENTITY(1,1) NOT NULL,
+    [Nome] nvarchar(max)  NOT NULL,
+    [Diretor] nvarchar(max)  NOT NULL,
+    [Sinopse] nvarchar(max)  NOT NULL,
+    [AnoLancamento] nvarchar(max)  NOT NULL,
+    [IdImdb] nvarchar(max)  NOT NULL,
+    [URLPoster] nvarchar(max)  NOT NULL,
+    [Generos] nvarchar(max)  NOT NULL,
+    [TrailerYoutube] nvarchar(max)  NOT NULL,
+    [ScreenShots] nvarchar(max)  NOT NULL
+);
+GO
+
+-- Creating table 'Papeis'
+CREATE TABLE [dbo].[Papeis] (
+    [IdPapel] int IDENTITY(1,1) NOT NULL,
+    [NomePersonagem] nvarchar(max)  NOT NULL,
+    [Filme_IdFilme] int  NOT NULL,
+    [Ator_IdAtor] int  NOT NULL
 );
 GO
 
@@ -260,12 +298,6 @@ ADD CONSTRAINT [PK_TokensRegistro]
     PRIMARY KEY CLUSTERED ([IdTokenRegistro] ASC);
 GO
 
--- Creating primary key on [IdDetalheTorrent] in table 'DetalheTorrents'
-ALTER TABLE [dbo].[DetalheTorrents]
-ADD CONSTRAINT [PK_DetalheTorrents]
-    PRIMARY KEY CLUSTERED ([IdDetalheTorrent] ASC);
-GO
-
 -- Creating primary key on [IdEventoAnnounce] in table 'EventosAnnounce'
 ALTER TABLE [dbo].[EventosAnnounce]
 ADD CONSTRAINT [PK_EventosAnnounce]
@@ -288,6 +320,24 @@ GO
 ALTER TABLE [dbo].[Legendas]
 ADD CONSTRAINT [PK_Legendas]
     PRIMARY KEY CLUSTERED ([IdLegenda] ASC);
+GO
+
+-- Creating primary key on [IdAtor] in table 'Atores'
+ALTER TABLE [dbo].[Atores]
+ADD CONSTRAINT [PK_Atores]
+    PRIMARY KEY CLUSTERED ([IdAtor] ASC);
+GO
+
+-- Creating primary key on [IdFilme] in table 'Filmes'
+ALTER TABLE [dbo].[Filmes]
+ADD CONSTRAINT [PK_Filmes]
+    PRIMARY KEY CLUSTERED ([IdFilme] ASC);
+GO
+
+-- Creating primary key on [IdPapel] in table 'Papeis'
+ALTER TABLE [dbo].[Papeis]
+ADD CONSTRAINT [PK_Papeis]
+    PRIMARY KEY CLUSTERED ([IdPapel] ASC);
 GO
 
 -- --------------------------------------------------
@@ -378,20 +428,6 @@ ON [dbo].[TorrentLeeches]
     ([Usuario_IdUsuario]);
 GO
 
--- Creating foreign key on [DetalheTorrent_IdDetalheTorrent] in table 'Torrents'
-ALTER TABLE [dbo].[Torrents]
-ADD CONSTRAINT [FK_TorrentDetalheTorrent]
-    FOREIGN KEY ([DetalheTorrent_IdDetalheTorrent])
-    REFERENCES [dbo].[DetalheTorrents]
-        ([IdDetalheTorrent])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-
--- Creating non-clustered index for FOREIGN KEY 'FK_TorrentDetalheTorrent'
-CREATE INDEX [IX_FK_TorrentDetalheTorrent]
-ON [dbo].[Torrents]
-    ([DetalheTorrent_IdDetalheTorrent]);
-GO
-
 -- Creating foreign key on [Usuario_IdUsuario] in table 'Convites'
 ALTER TABLE [dbo].[Convites]
 ADD CONSTRAINT [FK_UsuarioConvite]
@@ -406,18 +442,60 @@ ON [dbo].[Convites]
     ([Usuario_IdUsuario]);
 GO
 
--- Creating foreign key on [DetalheTorrent_IdDetalheTorrent] in table 'Legendas'
-ALTER TABLE [dbo].[Legendas]
-ADD CONSTRAINT [FK_DetalheTorrentLegenda]
-    FOREIGN KEY ([DetalheTorrent_IdDetalheTorrent])
-    REFERENCES [dbo].[DetalheTorrents]
-        ([IdDetalheTorrent])
+-- Creating foreign key on [Filme_IdFilme] in table 'Papeis'
+ALTER TABLE [dbo].[Papeis]
+ADD CONSTRAINT [FK_FilmePapel]
+    FOREIGN KEY ([Filme_IdFilme])
+    REFERENCES [dbo].[Filmes]
+        ([IdFilme])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 
--- Creating non-clustered index for FOREIGN KEY 'FK_DetalheTorrentLegenda'
-CREATE INDEX [IX_FK_DetalheTorrentLegenda]
+-- Creating non-clustered index for FOREIGN KEY 'FK_FilmePapel'
+CREATE INDEX [IX_FK_FilmePapel]
+ON [dbo].[Papeis]
+    ([Filme_IdFilme]);
+GO
+
+-- Creating foreign key on [Ator_IdAtor] in table 'Papeis'
+ALTER TABLE [dbo].[Papeis]
+ADD CONSTRAINT [FK_AtorPapel]
+    FOREIGN KEY ([Ator_IdAtor])
+    REFERENCES [dbo].[Atores]
+        ([IdAtor])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_AtorPapel'
+CREATE INDEX [IX_FK_AtorPapel]
+ON [dbo].[Papeis]
+    ([Ator_IdAtor]);
+GO
+
+-- Creating foreign key on [Filme_IdFilme] in table 'Torrents'
+ALTER TABLE [dbo].[Torrents]
+ADD CONSTRAINT [FK_FilmeTorrent]
+    FOREIGN KEY ([Filme_IdFilme])
+    REFERENCES [dbo].[Filmes]
+        ([IdFilme])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_FilmeTorrent'
+CREATE INDEX [IX_FK_FilmeTorrent]
+ON [dbo].[Torrents]
+    ([Filme_IdFilme]);
+GO
+
+-- Creating foreign key on [Filme_IdFilme] in table 'Legendas'
+ALTER TABLE [dbo].[Legendas]
+ADD CONSTRAINT [FK_FilmeLegenda]
+    FOREIGN KEY ([Filme_IdFilme])
+    REFERENCES [dbo].[Filmes]
+        ([IdFilme])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_FilmeLegenda'
+CREATE INDEX [IX_FK_FilmeLegenda]
 ON [dbo].[Legendas]
-    ([DetalheTorrent_IdDetalheTorrent]);
+    ([Filme_IdFilme]);
 GO
 
 -- --------------------------------------------------

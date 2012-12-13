@@ -18,7 +18,7 @@ namespace BitShareTest
             user.IdUsuario = 0;
             user.Nome = "marcospcury";
             user.Email = "marcospcury@gmail.com";
-            user.PassKey = "54bfc949-993a-4c41-88b5-00009d598972"; //Guid.NewGuid().ToString();
+            user.PassKey = "54bfc949993a4c4188b500009d598972"; //Guid.NewGuid().ToString();
             user.Senha = "12345";
             user.Categoria = "Owner";
             user.Ratio = 0;
@@ -45,12 +45,12 @@ namespace BitShareTest
             //repo.SaveChanges();
             //MonoTorrent.Common.Torrent torr = MonoTorrent.Common.Torrent.Load("C:\\Users\\Cury\\Desktop\\Torrents To Go\\The Mentalist S05E09 HDTV XviD-SaM.torrent");
             
-            var filme = new Imdb();
+            var filme = new Imdb(false);
             filme.FilmePorUrl("http://www.imdb.com/title/tt0118583/");
 
 
             //filme.FilmePorId("0350804");
-            var act = filme.Sinopse;
+            var act = filme.Atores;
             //string a = filme.PosterURL;
             //WebClient client = new WebClient();
             //client.DownloadFile(a, "E:\\imagem.jpg");

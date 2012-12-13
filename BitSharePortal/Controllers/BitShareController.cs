@@ -86,9 +86,9 @@ namespace BitSharePortal.Controllers
         {
             var listaRetorno = new List<SelectListItem>();
             listaRetorno.Add(new SelectListItem() { Value = "", Text = "Selecione", Selected = true });
-            listaRetorno.Add(new SelectListItem() { Value = "480", Text = "480" });
-            listaRetorno.Add(new SelectListItem() { Value = "720", Text = "720" });
-            listaRetorno.Add(new SelectListItem() { Value = "1080", Text = "1080" });
+            listaRetorno.Add(new SelectListItem() { Value = "640x480", Text = "640x480" });
+            listaRetorno.Add(new SelectListItem() { Value = "1280x720", Text = "1280x720" });
+            listaRetorno.Add(new SelectListItem() { Value = "1920x1080", Text = "1920x1080" });
             listaRetorno.Add(new SelectListItem() { Value = "Outro", Text = "Outro" });
 
             return listaRetorno;
@@ -103,6 +103,47 @@ namespace BitSharePortal.Controllers
             listaRetorno.Add(new SelectListItem() { Value = "5.1", Text = "5.1" });
             listaRetorno.Add(new SelectListItem() { Value = "7.1", Text = "7.1" });
             listaRetorno.Add(new SelectListItem() { Value = "7.2", Text = "7.2" });
+            listaRetorno.Add(new SelectListItem() { Value = "Outro", Text = "Outro" });
+
+            return listaRetorno;
+        }
+
+        protected List<SelectListItem> CarregarListaCodecAudio()
+        {
+            var listaRetorno = new List<SelectListItem>();
+            listaRetorno.Add(new SelectListItem() { Value = "", Text = "Selecione", Selected = true });
+            listaRetorno.Add(new SelectListItem() { Value = "MP3(MPG-Layer-3)", Text = "MP3(MPG-Layer-3)" });
+            listaRetorno.Add(new SelectListItem() { Value = "AC3", Text = "AC3" });
+            listaRetorno.Add(new SelectListItem() { Value = "AAC", Text = "AAC" });
+            listaRetorno.Add(new SelectListItem() { Value = "OGG", Text = "OGG" });
+            listaRetorno.Add(new SelectListItem() { Value = "DTS", Text = "DTS" });
+            listaRetorno.Add(new SelectListItem() { Value = "FLAC", Text = "FLAC" });
+            listaRetorno.Add(new SelectListItem() { Value = "MPC", Text = "MPC" });
+            listaRetorno.Add(new SelectListItem() { Value = "APE", Text = "APE" });
+            listaRetorno.Add(new SelectListItem() { Value = "OFR", Text = "OFR" });
+            listaRetorno.Add(new SelectListItem() { Value = "ATRAC3", Text = "ATRAC3" });
+            listaRetorno.Add(new SelectListItem() { Value = "RealAudio 7", Text = "RealAudio 7" });
+            listaRetorno.Add(new SelectListItem() { Value = "Real Alternative", Text = "Real Alternative" });
+
+            listaRetorno.Add(new SelectListItem() { Value = "Outro", Text = "Outro" });
+
+            return listaRetorno;
+        }
+
+        protected List<SelectListItem> CarregarListaCodecVideo()
+        {
+            var listaRetorno = new List<SelectListItem>();
+            listaRetorno.Add(new SelectListItem() { Value = "", Text = "Selecione", Selected = true });
+
+            listaRetorno.Add(new SelectListItem() { Value = "DivX", Text = "DivX" });
+            listaRetorno.Add(new SelectListItem() { Value = "RAM (Real Media)", Text = "RAM (Real Media)" });
+            listaRetorno.Add(new SelectListItem() { Value = "DAT", Text = "DAT" });
+            listaRetorno.Add(new SelectListItem() { Value = "MPEG-1", Text = "MPEG-1" });
+            listaRetorno.Add(new SelectListItem() { Value = "MPEG-2", Text = "MPEG-2" });
+            listaRetorno.Add(new SelectListItem() { Value = "MPEG-4", Text = "MPEG-4" });
+            listaRetorno.Add(new SelectListItem() { Value = "AVC", Text = "AVC" });
+            listaRetorno.Add(new SelectListItem() { Value = "H264", Text = "H264" });
+
             listaRetorno.Add(new SelectListItem() { Value = "Outro", Text = "Outro" });
 
             return listaRetorno;

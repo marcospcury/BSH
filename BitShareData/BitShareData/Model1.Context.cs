@@ -78,12 +78,6 @@ namespace BitShareData
         }
         private ObjectSet<TokenRegistro> _tokensRegistro;
     
-        public ObjectSet<DetalheTorrent> DetalheTorrents
-        {
-            get { return _detalheTorrents  ?? (_detalheTorrents = CreateObjectSet<DetalheTorrent>("DetalheTorrents")); }
-        }
-        private ObjectSet<DetalheTorrent> _detalheTorrents;
-    
         public ObjectSet<EventoAnnounce> EventosAnnounce
         {
             get { return _eventosAnnounce  ?? (_eventosAnnounce = CreateObjectSet<EventoAnnounce>("EventosAnnounce")); }
@@ -107,6 +101,24 @@ namespace BitShareData
             get { return _legendas  ?? (_legendas = CreateObjectSet<Legenda>("Legendas")); }
         }
         private ObjectSet<Legenda> _legendas;
+    
+        public ObjectSet<Ator> Atores
+        {
+            get { return _atores  ?? (_atores = CreateObjectSet<Ator>("Atores")); }
+        }
+        private ObjectSet<Ator> _atores;
+    
+        public ObjectSet<Filme> Filmes
+        {
+            get { return _filmes  ?? (_filmes = CreateObjectSet<Filme>("Filmes")); }
+        }
+        private ObjectSet<Filme> _filmes;
+    
+        public ObjectSet<Papel> Papeis
+        {
+            get { return _papeis  ?? (_papeis = CreateObjectSet<Papel>("Papeis")); }
+        }
+        private ObjectSet<Papel> _papeis;
 
         #endregion
 

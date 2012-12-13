@@ -4,6 +4,7 @@ using MonoTorrent.BEncoding;
 using MonoTorrent.Common;
 using System;
 using System.Collections.Generic;
+using System.Data.Objects;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -51,29 +52,53 @@ namespace BitSharePortal.Controllers
         }
 
         [HttpPost]
-        public ActionResult Upload(HttpPostedFileBase uploadFile, TorrentUploadModel model)
+        public ActionResult Upload(TorrentUploadModel model)
         {
             ViewBag.ListaCategoria = CarregarListaCategoria();
+            ViewBag.ListaResolucao = CarregarListaResolucao();
+            ViewBag.ListaAudio = CarregarListaAudio();
+            ViewBag.ListaCodecAudio = CarregarListaCodecAudio();
+            ViewBag.ListaCodecVideo = CarregarListaCodecVideo();
+
+            HttpPostedFileBase torrentFile = Request.Files["torrentFile"];
 
             if (ModelState.IsValid)
             {
-                var arquivoTorrent = String.Format("{0}\\{1}", Server.MapPath("/Torrents"), uploadFile.FileName);
-                uploadFile.SaveAs(arquivoTorrent);
-                var dadosTorrent = MonoTorrent.Common.Torrent.Load(arquivoTorrent);
-                Usuario usuarioLancamento;
-
-                using (var repositorio = new DataRepository<BitShareData.Torrent>())
+                try
                 {
-                    var detalhe = new DetalheTorrent();
+                    var arquivoTorrent = String.Format("{0}\\{1}", Server.MapPath("/Torrents"), torrentFile.FileName);
+                    torrentFile.SaveAs(arquivoTorrent);
+                    var dadosTorrent = MonoTorrent.Common.Torrent.Load(arquivoTorrent);
 
-                    detalhe.IdDetalheTorrent = 0;
-                    detalhe.Descricao = model.Descricao;
-                    detalhe.Imagens = model.ImagensURL;
+                    Usuario usuarioLancamento;
 
+                    var repositorioPrincipal = new DataRepository<BitShareData.Torrent>();
                     var bitShareTorrent = new BitShareData.Torrent();
+
+                    var filmeImdb = CarregarFilmeImdb(model.IdImdb);
+
+                    var repositorioFilme = new DataRepository<Filme>(repositorioPrincipal.Context);
+                    var filmesEncontrados = repositorioFilme.Find(f => f.IdImdb == model.IdImdb);
+                    if (filmesEncontrados.Count() > 0)
+                    {
+                        bitShareTorrent.Filme = filmesEncontrados.First();
+                    }
+                    else
+                    {
+                        bitShareTorrent.Filme = GravarNovoFilme(repositorioFilme, filmeImdb, model);
+                    }
+
+                    var nomeTorrent = String.Format("[{0}] [{1} {2}] [{3} {4}]", filmeImdb.Titulo, model.CodecVideo, model.Resolucao, model.CodecAudio, model.Audio);
+
+                    if (model.Dublado)
+                    {
+                        nomeTorrent += " [Dub]";
+                    }
+
                     bitShareTorrent.IdTorrent = 0;
-                    bitShareTorrent.Nome = uploadFile.FileName; // Trocar por nome e criar um campo de arquivo
-                    bitShareTorrent.Categoria = model.Categoria;
+                    bitShareTorrent.Nome = nomeTorrent;
+                    bitShareTorrent.Arquivo = torrentFile.FileName;
+                    bitShareTorrent.Categoria = "";//model.Categoria;
                     bitShareTorrent.HashInfo = dadosTorrent.InfoHash.ToString();
                     bitShareTorrent.Tamanho = dadosTorrent.Size;
                     bitShareTorrent.Seeds = 0;
@@ -82,7 +107,29 @@ namespace BitSharePortal.Controllers
                     bitShareTorrent.FreeLeech = false;
                     bitShareTorrent.Ativo = true;
                     bitShareTorrent.PrimeiroSnatch = false;
-                    bitShareTorrent.DetalheTorrent = detalhe;
+                    bitShareTorrent.Downloads = 0;
+                    bitShareTorrent.Resolucao = model.Resolucao;
+                    bitShareTorrent.Audio = model.Audio;
+                    bitShareTorrent.CodecAudio = model.CodecAudio;
+                    bitShareTorrent.CodecVideo = model.CodecVideo;
+                    bitShareTorrent.Observacoes = model.Observacoes == null ? "" : model.Observacoes;
+                    bitShareTorrent.Dublado = model.Dublado;
+
+                    if (Request.Files.Count > 1)
+                    {
+                        for (int indice = 1; indice < Request.Files.Count; indice++)
+                        {
+                            if (Request.Files[indice].FileName != "")
+                            {
+                                Request.Files[indice].SaveAs(String.Format("{0}\\{1}", Server.MapPath("/Legendas"), Request.Files[indice].FileName));
+                                var legenda = new Legenda();
+                                legenda.IdLegenda = 0;
+                                legenda.Idioma = model.idiomaLegenda[indice - 1];
+                                legenda.Arquivo = Request.Files[indice].FileName;
+                                bitShareTorrent.Filme.Legendas.Add(legenda);
+                            }
+                        }
+                    }
 
                     foreach (var file in dadosTorrent.Files)
                     {
@@ -94,24 +141,105 @@ namespace BitSharePortal.Controllers
                     }
 
                     // recupera o usuário pela entity, para poder fazer o relacionamento com o Torrent
-                    using (var repositorioUsuario = new DataRepository<BitShareData.Usuario>(repositorio.Context))
-                    {
-                        usuarioLancamento = repositorioUsuario.First(u => u.IdUsuario == UsuarioLogado.IdUsuario);
+                    var repositorioUsuario = new DataRepository<BitShareData.Usuario>(repositorioPrincipal.Context);
+                    usuarioLancamento = repositorioUsuario.First(u => u.IdUsuario == UsuarioLogado.IdUsuario);
 
-                        bitShareTorrent.UsuarioLancamento = usuarioLancamento;
+                    bitShareTorrent.UsuarioLancamento = usuarioLancamento;
 
-                        repositorio.Add(bitShareTorrent);
-                        repositorio.SaveChanges();
-                    }
+                    repositorioPrincipal.Add(bitShareTorrent);
+                    repositorioPrincipal.SaveChanges();
+
+                    return View("UploadSucceded");    
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+                finally
+                {
+                    // dispose do repositorio
                 }
             }
+            else
+            {
+                ViewBag.EmValidacao = true;
+                ViewBag.IdImdb = model.IdImdb;
+                return View(model);
+            }
+        }
 
-            return View(model);
+        private Filme GravarNovoFilme(DataRepository<Filme> repositorioFilme, FilmeIMDBJsonResult filmeImdb, TorrentUploadModel model)
+        {
+            var filme = new Filme();
+            filme.IdFilme = 0;
+            filme.IdImdb = filmeImdb.IDImdb;
+            filme.Nome = filmeImdb.Titulo;
+            filme.Diretor = filmeImdb.Diretor;
+            filme.AnoLancamento = filmeImdb.AnoLancamento;
+            filme.Sinopse = filmeImdb.Sinopse;
+            filme.URLPoster = filmeImdb.URLPoster;
+            filme.Generos = filmeImdb.Generos;
+            filme.TrailerYoutube = model.TrailerYoutube == null ? "" : model.TrailerYoutube;
+            filme.ScreenShots = ""; //TODO
+
+            foreach (var atorImdb in filmeImdb.ListaAtores)
+            {
+                var repositorioAtor = new DataRepository<Ator>(repositorioFilme.Context);
+                var atores = repositorioAtor.Find(a => a.IdImdb == atorImdb.IDImdb);
+                Ator atorAtual;
+                if (atores.Count() > 0)
+                {
+                    atorAtual = atores.First();
+                }
+                else
+                {
+                    atorAtual = new Ator();
+                    atorAtual.IdAtor = 0;
+                    atorAtual.Nome = atorImdb.Nome;
+                    atorAtual.IdImdb = atorImdb.IDImdb;
+                    atorAtual.URLFoto = atorImdb.URLFoto == null ? "" : atorImdb.URLFoto;
+                    repositorioAtor.Add(atorAtual);
+                }
+
+                filme.Papels.Add(new Papel() { Ator = atorAtual, IdPapel = 0, NomePersonagem = atorImdb.Papel });
+            }
+
+            return filme;
+        }
+
+        public ActionResult ListaTorrentsFilme(string id)
+        {
+            string retorno = "";
+            var filtro = String.Format(" where Filme_IdFilme in (select IdFilme From Filmes where IdImdb = '{0}')", id);
+            var listaTorrents = Connection.ExecuteQuery<TorrentModel>(queryBase + filtro);
+
+            if (listaTorrents.Count() > 0)
+            {
+                retorno += "<table width='100%'>";
+                foreach (var torrent in listaTorrents)
+                {
+                    retorno += String.Format("<tr><td width='470'><a href='Detail/{0}'>{1}</a></td><td>{2}</td><td>{3}</td></tr>", torrent.IdTorrent, torrent.Nome, torrent.DataLancamento.ToString("dd/MM/yyyy hh:mm"), torrent.TamanhoTorrent);
+                }
+                retorno += "</table>";
+            }
+
+            return Json(new { tabela = retorno }, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult Upload()
         {
             ViewBag.ListaCategoria = CarregarListaCategoria();
+            ViewBag.ListaResolucao = CarregarListaResolucao();
+            ViewBag.ListaAudio = CarregarListaAudio();
+            ViewBag.ListaCodecAudio = CarregarListaCodecAudio();
+            ViewBag.ListaCodecVideo = CarregarListaCodecVideo();
+            ViewBag.EmValidacao = false;
+
+            return View();
+        }
+
+        public ActionResult UploadSucceded()
+        {
             return View();
         }
 
@@ -139,7 +267,5 @@ namespace BitSharePortal.Controllers
                 throw;
             }
         }
-
-       
     }
 }

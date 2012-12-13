@@ -11,29 +11,71 @@
     <script>
         $(function () {
             $("button").button();
+            jQuery.fn.center = function () {
+                this.css("position", "absolute");
+                this.css("top", ($(window).height() - this.height()) / 2 + $(window).scrollTop() + "px");
+                this.css("left", ($(window).width() - this.width()) / 2 + $(window).scrollLeft() + "px");
+                return this;
+            }
         });
+        function Carregando(mensagem) {
+            $("#loading>span").text(mensagem);
+            $("#loading").center();
+            $("#loading").show();
+        }
+
+        function PararCarregando() {
+            $("#loading").hide();
+        }
     </script>
+    <style>
+        #loading {
+            display: none;
+            background-color:white;
+            border:solid;
+            border-width:thin;
+            width:auto;
+            height:50px;
+            text-align:center;
+        }
+         #loading>span {
+            height:18px;
+            margin-left:10px;
+            margin-right:5px;
+        }
+    </style>
 </head>
 <body>
+    <div id="loading"><br /><span id="texto">Aguarde...</span><img src="../Content/images/ui-anim_basic_16x16.gif" style="margin-right:10px;" /></div>
     <div id="mainContainer">
         <div id="headerBanner">
         </div>
         <div id="headerMenu">
-            <a href="/Home"><button class="buttonMenuMain">Home</button></a>
-            <a href="/Torrents/Browse"><button class="buttonMenuMain">Torrents</button></a>
-            <a href="/Torrents/Upload"><button class="buttonMenuMain">Upload</button></a>
+            <a href="/Home">
+                <button class="buttonMenuMain">Home</button></a>
+            <a href="/Torrents/Browse">
+                <button class="buttonMenuMain">Torrents</button></a>
+            <a href="/Torrents/Upload">
+                <button class="buttonMenuMain">Upload</button></a>
             <button class="buttonMenuMain">Forum</button>
             <button class="buttonMenuMain">Top 10</button>
-            <a href="/Home/Regras"><button class="buttonMenuMain">Regras</button></a>
-            <a href="/Home/Contato"><button class="buttonMenuMain">Contato</button></a>
+            <a href="/Home/Regras">
+                <button class="buttonMenuMain">Regras</button></a>
+            <a href="/Home/Contato">
+                <button class="buttonMenuMain">Contato</button></a>
         </div>
         <div id="userDataStrip">
-            <div style="width:200px; float:left;">Olá, <a href="@ViewBag.BaseURL/Users/Profile/@ViewBag.UsuarioLogado.IdUsuario">@ViewBag.UsuarioLogado.Nome</a> [<a href="@ViewBag.BaseURL/Users/Logout">Logout</a>]</div> 
-            <div style="width:180px; float:left;"><img src="../../Content/Images/arrowup.gif" alt="Uploaded" /> @ViewBag.UsuarioLogado.Uploaded <img src="../../Content/Images/arrowdown.gif" alt="Downloaded" /> @ViewBag.UsuarioLogado.Downloaded </div>
-            <div style="width:120px; float:left;">Ratio: @ViewBag.UsuarioLogado.Ratio</div>
-            <div style="width:120px; float:left;">Bonus: <a href="@ViewBag.BaseURL/Users/Bonus/@ViewBag.UsuarioLogado.IdUsuario">@ViewBag.UsuarioLogado.Bonus</a></div>
-            <div style="width:120px; float:left;">Convites: <a href="@ViewBag.BaseURL/Users/Invite/@ViewBag.UsuarioLogado.IdUsuario">@ViewBag.UsuarioLogado.ConvitesDisponiveis</a></div>
-            <div style="width:120px; float:left;"><img src="../../Content/Images/inbox.png" alt="Uploaded" /><a href="#"> Mensagens (0)</a></div>
+            <div style="width: 200px; float: left;">Olá, <a href="@ViewBag.BaseURL/Users/Profile/@ViewBag.UsuarioLogado.IdUsuario">@ViewBag.UsuarioLogado.Nome</a> [<a href="@ViewBag.BaseURL/Users/Logout">Logout</a>]</div>
+            <div style="width: 180px; float: left;">
+                <img src="../../Content/Images/arrowup.gif" alt="Uploaded" />
+                @ViewBag.UsuarioLogado.Uploaded
+                <img src="../../Content/Images/arrowdown.gif" alt="Downloaded" />
+                @ViewBag.UsuarioLogado.Downloaded </div>
+            <div style="width: 120px; float: left;">Ratio: @ViewBag.UsuarioLogado.Ratio</div>
+            <div style="width: 120px; float: left;">Bonus: <a href="@ViewBag.BaseURL/Users/Bonus/@ViewBag.UsuarioLogado.IdUsuario">@ViewBag.UsuarioLogado.Bonus</a></div>
+            <div style="width: 120px; float: left;">Convites: <a href="@ViewBag.BaseURL/Users/Invite/@ViewBag.UsuarioLogado.IdUsuario">@ViewBag.UsuarioLogado.ConvitesDisponiveis</a></div>
+            <div style="width: 120px; float: left;">
+                <img src="../../Content/Images/inbox.png" alt="Uploaded" /><a href="#"> Mensagens (0)</a></div>
             <br style="clear: both;" />
         </div>
         <div id="containerContent">

@@ -1,6 +1,6 @@
 ﻿@model BitSharePortal.Models.TorrentUploadModel
 <style>
-    #botaoUpload, #botaoIMDB {
+    #botaoUpload, #botaoIMDB, #botaoLegenda {
         font: 98% "Trebuchet MS", sans-serif;
     }
 
@@ -30,13 +30,6 @@
         width: 100%;
         cursor: pointer;
     }
-
-    #loading {
-        float: left;
-        font-size: 11px;
-        margin-left: 10px;
-        display: none;
-    }
 </style>
 
 <script>
@@ -46,16 +39,18 @@
             icons: {
                 primary: "ui-icon-arrowthick-1-n"
             }
+        }).click(function () {
+            Carregando("Aguarde... Enviando torrent");
         });
 
-        jQuery(document).ajaxStart(function () {
-            $("#loading").show();
-            $("#detalhesFilme").hide();
-        })
-
-        jQuery(document).ajaxStop(function () {
-            $("#loading").hide();
-        })
+        $("#botaoLegenda").button({
+            icons: {
+                primary: "ui-icon-plus"
+            }
+        }).click(function () {
+            $("#tableLegendas").append('<tr><td>Arquivo:</td><td><input type="file" name="legendaFile[]" style="width: 300px;" /></td><td>Idioma:</td><td><select id="idiomaLegenda" name="idiomaLegenda" style="width: 200px;"><option>Português</option><option>Inglês</option><option>Espanhol</option></select></td></tr>');
+            return false;
+        });
 
         $("#botaoIMDB").button({
             icons: {
@@ -63,13 +58,20 @@
             }
         }).click(function () {
 
-            CarregarFilme($("#url_imdb").val());
+            if ($("#url_imdb").val() == "") {
+                alert("Informe a URL do IMDB");
+            }
+            else {
+                CarregarFilme($("#url_imdb").val());
+            }
+
             return false;
         });
 
         function CarregarFilme(IdImdb) {
-            $("#loading").show();
+            Carregando("Buscando informações do IMDB");
             $("#detalhesFilme").hide();
+            $("#IdImdb").val("");
             $.ajax({
                 url: 'http://www.bit-share-rest.net/Movies/Get/?id=' + IdImdb.replace("http://www.imdb.com/title/tt", "").replace("/", ""),
                 dataType: "jsonp",
@@ -86,18 +88,42 @@
                     $("#castFilme").html(data.Cast);
                     $("#generoFilme").text(data.Generos);
                     $("#detalhesFilme").show("blind");
-                    $("#loading").hide();
+                    $("#url_imdb").val(data.URLImdb);
+
+                    $("#IdImdb").val(IdImdb.replace("http://www.imdb.com/title/tt", "").replace("/", ""));
+
+                    PararCarregando();
+
+                    CarregarTorrentsFilme(IdImdb);
+                }
+            });
+        }
+
+        function CarregarTorrentsFilme(IdImdb) {
+            Carregando("Buscando torrents para o filme");
+            $("#torrentsFilme").hide();
+            $.ajax({
+                url: 'ListaTorrentsFilme/' + IdImdb.replace("http://www.imdb.com/title/tt", "").replace("/", ""),
+                success: function (data) {
+                    if (data.tabela != "") {
+                        $("#listaTorrents").html(data.tabela);
+                        $("#torrentsFilme").show("blind");
+                    }
+                    PararCarregando();
                 }
             });
         }
 
         $("#pesquisa_filmes").autocomplete({
-            source:function( request, response ) {
+            source: function (request, response) {
+                $("#detalhesFilme").hide();
+                $("#torrentsFilme").hide();
+                $("#IdImdb").val("");
                 $.ajax({
                     url: "http://www.bit-share-rest.net/Movies/Search/?term=" + request.term,
                     dataType: "jsonp",
                     success: function (data) {
-                        response( $.map( data, function( item ) {
+                        response($.map(data, function (item) {
                             return {
                                 label: item.label,
                                 value: item.value,
@@ -121,9 +147,22 @@
                 .appendTo(ul);
         };
 
-
+@if (ViewBag.EmValidacao && ViewBag.IdImdb != null)
+{
+    <text>
+        CarregarFilme("@ViewBag.IdImdb");
+    </text>
+}
+else
+{
+    <text>
         $("#detalhesFilme").hide();
+        $("#torrentsFilme").hide();
+        </text>
+}
+
     });
+
 </script>
 
 <div id="torrentsContainer" class="borderedDiv">
@@ -138,13 +177,14 @@
                     <td width="20%">Arquivo:
                     </td>
                     <td>
-                        <input type="file" name="uploadFile" style="width: 400px;" />
+                        <input type="file" name="torrentFile" style="width: 400px;" />
                     </td>
                 </tr>
                 <tr>
                     <td>Filme:
                     </td>
-                    <td>Pesquisar:
+                    <td>@Html.ValidationMessageFor(m => m.IdImdb)<br />
+                        Pesquisar:
                         <input id="pesquisa_filmes" style="width: 400px;" />
                         ou
                         <br />
@@ -152,7 +192,6 @@
                         <input id="url_imdb" style="width: 400px;" />
                         <button id="botaoIMDB">Carregar informações</button>
                         <br />
-                        <div id="loading">Aguarde...<img src="../Content/images/ui-anim_basic_16x16.gif"/></div>
                         <div id="detalhesFilme" class="borderedDiv">
                             <div class="ui-widget-header padded">Informações do Filme</div>
                             <div class="padded">
@@ -179,34 +218,96 @@
                                 </table>
                             </div>
                         </div>
+
+                        <div id="torrentsFilme" class="borderedDiv">
+                            <div class="ui-widget-header padded">Torrents já enviados para este filme</div>
+                            <div id="listaTorrents" class="padded">
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 <tr>
-                    <td>Categoria:
+                    <td>Resolução:
                     </td>
                     <td>
-                        @Html.DropDownListFor(m => m.Categoria, new SelectList((List<SelectListItem>)ViewBag.ListaCategoria, "Value", "Text"), new { @style = "width:200px;" })
-                        <br />@Html.ValidationMessageFor(m => m.Categoria)
+                        @Html.DropDownListFor(m => m.Resolucao, new SelectList((List<SelectListItem>)ViewBag.ListaResolucao, "Value", "Text"), new { @style = "width:200px;" })
+                        <br />@Html.ValidationMessageFor(m => m.Resolucao)
                     </td>
                 </tr>
                 <tr>
-                    <td>Descrição:
+                    <td>Codec de Vídeo:
                     </td>
                     <td>
-                        @Html.TextAreaFor(m => m.Descricao, new { @style = "width:100%;" })
-                        <br />@Html.ValidationMessageFor(m => m.Descricao)
+                        @Html.DropDownListFor(m => m.CodecVideo, new SelectList((List<SelectListItem>)ViewBag.ListaCodecVideo, "Value", "Text"), new { @style = "width:200px;" })
+                        <br />@Html.ValidationMessageFor(m => m.CodecVideo)
                     </td>
                 </tr>
                 <tr>
-                    <td>Imagens (1 URL por linha):
+                    <td>Canais de Áudio:
                     </td>
                     <td>
-                        @Html.TextAreaFor(m => m.ImagensURL, new { @style = "width:600px;" })
-                        <br />@Html.ValidationMessageFor(m => m.ImagensURL)
+                        @Html.DropDownListFor(m => m.Audio, new SelectList((List<SelectListItem>)ViewBag.ListaAudio, "Value", "Text"), new { @style = "width:200px;" })
+                        <br />@Html.ValidationMessageFor(m => m.Audio)
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2" align="center">
+                    <td>Codec de Áudio:
+                    </td>
+                    <td>
+                        @Html.DropDownListFor(m => m.CodecAudio, new SelectList((List<SelectListItem>)ViewBag.ListaCodecAudio, "Value", "Text"), new { @style = "width:200px;" })
+                        <br />@Html.ValidationMessageFor(m => m.CodecAudio)
+                    </td>
+                </tr>
+                <tr>
+                    <td>Dublado:
+                    </td>
+                    <td>
+                        @Html.CheckBoxFor(m => m.Dublado)
+                    </td>
+                </tr>
+                <tr>
+                    <td>Trailer (Youtube):
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(m => m.TrailerYoutube, new { @style = "width:400px;" })
+                        <br />@Html.ValidationMessageFor(m => m.TrailerYoutube)
+                    </td>
+                </tr>
+                <tr>
+                    <td>Observações:
+                    </td>
+                    <td>
+                        @Html.TextAreaFor(m => m.Observacoes, new { @style = "width:600px;" })
+                        <br />@Html.ValidationMessageFor(m => m.Observacoes)
+                    </td>
+                </tr>
+                <tr>
+                    <td>Legendas:
+                    </td>
+                    <td>
+                        <table id="tableLegendas">
+                            <tr>
+                                <td>Arquivo:
+                                </td>
+                                <td>
+                                    <input type="file" name="legendaFile[]" style="width: 300px;" />
+                                </td>
+                                <td>Idioma:
+                                </td>
+                                <td>
+                                    <select id="idiomaLegenda" name="idiomaLegenda" style="width: 200px;">
+                                        <option>Português</option>
+                                        <option>Inglês</option>
+                                        <option>Espanhol</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                        <button id="botaoLegenda">Adicionar Legenda</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center">@Html.HiddenFor(m => m.IdImdb)
                         <button id="botaoUpload">Enviar Torrent</button></td>
                 </tr>
             </table>

@@ -12,7 +12,7 @@ namespace ImdbRest.Controllers
         public ActionResult Search(string term)
         {
             var resultado = new List<PesquisaFilmesJsonResult>();
-            var pesquisaFilmes = new Imdb();
+            var pesquisaFilmes = new Imdb(false);
             var filmesResult = pesquisaFilmes.PesquisarFilmes(term).Take(10);
 
             foreach (var filmeResult in filmesResult)
@@ -27,7 +27,7 @@ namespace ImdbRest.Controllers
         {
             var resultado = new FilmeIMDBJsonResult();
 
-            var filme = new Imdb();
+            var filme = new Imdb(false);
             filme.FilmePorId(id);
 
             if (filme != null)
@@ -35,6 +35,7 @@ namespace ImdbRest.Controllers
                 resultado.IDImdb = id;
                 resultado.Titulo = filme.Nome;
                 resultado.URLPoster = filme.PosterURL;
+                resultado.URLImdb = filme.URLFilme;
                 resultado.AnoLancamento = filme.AnoLancamento;
                 resultado.Diretor = filme.Diretor;
                 resultado.Generos = filme.Generos;
@@ -53,7 +54,7 @@ namespace ImdbRest.Controllers
         {
             var resultado = new FilmeIMDBJsonResult();
 
-            var filme = new Imdb();
+            var filme = new Imdb(true);
             filme.FilmePorId(id);
 
             if (filme != null)
@@ -61,6 +62,7 @@ namespace ImdbRest.Controllers
                 resultado.IDImdb = id;
                 resultado.Titulo = filme.Nome;
                 resultado.URLPoster = filme.PosterURL;
+                resultado.URLImdb = filme.URLFilme;
                 resultado.AnoLancamento = filme.AnoLancamento;
                 resultado.Diretor = filme.Diretor;
                 resultado.Generos = filme.Generos;

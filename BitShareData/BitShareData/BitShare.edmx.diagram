@@ -4,9 +4,9 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="87c201e3876846518f181b1c534573c9" Name="Diagram1" ZoomLevel="90" >
+      <Diagram DiagramId="87c201e3876846518f181b1c534573c9" Name="Diagram1" ZoomLevel="94" >
         <EntityTypeShape EntityType="BitShare.Usuario" Width="2.125" PointX="1.25" PointY="5.125" />
-        <EntityTypeShape EntityType="BitShare.Torrent" Width="2.375" PointX="4.125" PointY="6.125" />
+        <EntityTypeShape EntityType="BitShare.Torrent" Width="2.375" PointX="4.125" PointY="4.375" />
         <AssociationConnector Association="BitShare.UsuarioTorrent" />
         <EntityTypeShape EntityType="BitShare.ArquivoTorrent" Width="1.5" PointX="7" PointY="6.375" />
         <AssociationConnector Association="BitShare.TorrentArquivoTorrent" />
@@ -17,14 +17,18 @@
         <AssociationConnector Association="BitShare.TorrentTorrentLeech" />
         <AssociationConnector Association="BitShare.UsuarioTorrentLeech" />
         <EntityTypeShape EntityType="BitShare.TokenRegistro" Width="1.5" PointX="9" PointY="7" />
-        <EntityTypeShape EntityType="BitShare.DetalheTorrent" Width="2" PointX="4.25" PointY="0.5" />
-        <AssociationConnector Association="BitShare.TorrentDetalheTorrent" />
-        <EntityTypeShape EntityType="BitShare.EventoAnnounce" Width="2" PointX="9" PointY="0.5" />
-        <EntityTypeShape EntityType="BitShare.Client" Width="1.875" PointX="6.75" PointY="0.5" />
+        <EntityTypeShape EntityType="BitShare.EventoAnnounce" Width="2" PointX="7" PointY="2.625" />
+        <EntityTypeShape EntityType="BitShare.Client" Width="1.875" PointX="7" PointY="0.5" />
         <EntityTypeShape EntityType="BitShare.Convite" Width="1.5" PointX="0.5" PointY="11.25" />
         <AssociationConnector Association="BitShare.UsuarioConvite" />
-        <EntityTypeShape EntityType="BitShare.Legenda" Width="1.5" PointX="1.75" PointY="1.625" />
-        <AssociationConnector Association="BitShare.DetalheTorrentLegenda" />
+        <EntityTypeShape EntityType="BitShare.Legenda" Width="1.5" PointX="1.375" PointY="3" />
+        <EntityTypeShape EntityType="BitShare.Ator" Width="1.5" PointX="1" PointY="0.625" />
+        <EntityTypeShape EntityType="BitShare.Filme" Width="1.5" PointX="5.25" PointY="0.5" />
+        <EntityTypeShape EntityType="BitShare.Papel" Width="1.75" PointX="3" PointY="0.625" />
+        <AssociationConnector Association="BitShare.FilmePapel" />
+        <AssociationConnector Association="BitShare.AtorPapel" />
+        <AssociationConnector Association="BitShare.FilmeTorrent" />
+        <AssociationConnector Association="BitShare.FilmeLegenda" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

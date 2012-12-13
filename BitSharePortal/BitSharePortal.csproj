@@ -216,6 +216,7 @@
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\modernizr-2.5.3.js" />
+    <Content Include="TextFile1.txt" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -247,9 +248,13 @@
     <Content Include="Views\Users\Login.cshtml" />
     <Content Include="Views\Users\EnterInvite.cshtml" />
     <Content Include="Views\Users\Profile.cshtml" />
+    <Content Include="Views\Torrents\UploadSucceded.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="ImageCatalog\Actors\" />
+    <Folder Include="ImageCatalog\Movies\" />
+    <Folder Include="Legendas\" />
     <Folder Include="Torrents\" />
   </ItemGroup>
   <ItemGroup>

@@ -1,0 +1,5 @@
+http://192.168.1.5:47124/announce/
+
+http://http://189.102.177.200:47124/announce
+
+http://tracker.bit-share.net/announce.aspx?passkey=54bfc949-993a-4c41-88b5-00009d598972
