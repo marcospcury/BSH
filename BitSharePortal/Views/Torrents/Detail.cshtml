@@ -1,5 +1,376 @@
-﻿@{
-    ViewBag.Title = "Detail";
-}
+﻿@model BitShareData.Torrent
 
-<h2>Detail</h2>
+@section AddToHead{
+<style>
+    #botaoDownload, #botaoReportar, #botaoTrailer, #botaoArquivos, #botaoLeechers, #botaoSeeders, #botaoComentario {
+        font: 98% "Trebuchet MS", sans-serif;
+    }
+</style>
+<script>
+    $(function () {
+        $("#tableArquivos").hide();
+        $("#tableSeeders").hide();
+        $("#tableLeechers").hide();
+
+        $("#botaoDownload").button({
+            icons: {
+                primary: "ui-icon-arrowthick-1-s"
+            }
+        });
+
+        $("#botaoComentario").button({
+            icons: {
+                primary: "ui-icon-comment"
+            }
+        }).click(function () {
+            $("#dialogComment").dialog("open");
+            return false;
+        });
+
+        $("#botaoArquivos").button({
+            text: false,
+            icons: {
+                primary: "ui-icon-plus"
+            }
+        }).click(function () {
+            var options;
+            if ($(this).text() === "Mostrar Arquivos") {
+                options = {
+                    label: "Ocultar Arquivos",
+                    icons: {
+                        primary: "ui-icon-minus"
+                    }
+                };
+                $("#tableArquivos").show("blind");
+            } else {
+                options = {
+                    label: "Mostrar Arquivos",
+                    icons: {
+                        primary: "ui-icon-plus"
+                    }
+                };
+                $("#tableArquivos").hide("blind");
+            }
+            $(this).button("option", options);
+
+            return false;
+        });
+
+        $("#botaoSeeders").button({
+            text: false,
+            icons: {
+                primary: "ui-icon-plus"
+            }
+        }).click(function () {
+            var options;
+            if ($(this).text() === "Mostrar Seeders") {
+                options = {
+                    label: "Ocultar Seeders",
+                    icons: {
+                        primary: "ui-icon-minus"
+                    }
+                };
+                $("#tableSeeders").show("blind");
+            } else {
+                options = {
+                    label: "Mostrar Seeders",
+                    icons: {
+                        primary: "ui-icon-plus"
+                    }
+                };
+                $("#tableSeeders").hide("blind");
+            }
+            $(this).button("option", options);
+
+            return false;
+        });
+
+        $("#botaoLeechers").button({
+            text: false,
+            icons: {
+                primary: "ui-icon-plus"
+            }
+        }).click(function () {
+            var options;
+            if ($(this).text() === "Mostrar Leechers") {
+                options = {
+                    label: "Ocultar Leechers",
+                    icons: {
+                        primary: "ui-icon-minus"
+                    }
+                };
+                $("#tableLeechers").show("blind");
+            } else {
+                options = {
+                    label: "Mostrar Leechers",
+                    icons: {
+                        primary: "ui-icon-plus"
+                    }
+                };
+                $("#tableLeechers").hide("blind");
+            }
+            $(this).button("option", options);
+
+            return false;
+        });
+
+        $("#botaoTrailer").button({
+            icons: {
+                primary: "ui-icon-video"
+            }
+        }).click(function () {
+            $("#dialogTrailer").dialog("open");
+            return false;
+        });
+
+        $("#botaoReportar").button({
+            icons: {
+                primary: "ui-icon-alert"
+            }
+        }).click(function () {
+            return false;
+        });
+
+        $("#dialogTrailer").dialog({
+            autoOpen: false,
+            height: 410,
+            width: 455,
+            modal: true,
+            resizable: false
+        });
+
+        $("#dialogComment").dialog({
+            autoOpen: false,
+            height: 320,
+            width: 755,
+            modal: true,
+            resizable: false
+        });
+    });
+</script>
+}
+<div id="dialogTrailer" title="@Model.Filme.Nome - Trailer">
+    <iframe title="YouTube video player" class="youtube-player" type="text/html" width="425" height="349" src="@Model.Filme.TrailerYoutube.Replace("watch?v=", "embed/")" frameborder="0" allowfullscreen></iframe>
+</div>
+<div id="dialogComment" title="Comentar">
+    @Html.Partial("ComentarioTorrent", Model)
+</div>
+<div id="torrentsDetail" class="borderedDiv">
+    <div class="ui-widget-header padded">Detalhes do Torrent</div>
+    <div class="padded">
+        <table width="100%">
+            <tr>
+                <td colspan="2">
+                    <a class="linkDownload" href="/Torrents/Download/@Model.IdTorrent.ToString()"><button id="botaoDownload">Download</button></a>
+                    <button id="botaoReportar">Reportar um problema</button>
+                </td>
+            </tr>
+            <tr>
+                <td width="224" align="center" valign="top">
+                    <img id="posterFilme" src="@Model.Filme.URLPoster" style="max-width: 214px; max-height: 317px;" height="317" alt="" title="">
+                    <br />
+                    Diretor: <span id="diretorFilme"><a href="/Search/Director/@Model.Filme.Diretor" title="Pesquisar mais filmes de @Model.Filme.Diretor">@Model.Filme.Diretor</a></span>
+                    <br />
+                    Ano de Lançamento: <span id="anoLancamento"><a href="/Search/Year/@Model.Filme.AnoLancamento" title="Pesquisar mais filmes lançados em @Model.Filme.AnoLancamento">@Model.Filme.AnoLancamento</a>
+                    </span>
+                    <br />
+                    Duração: <span id="duracaoFilme">@Model.Filme.Duracao</span>
+                    <br />
+                    <span id="generoFilme">
+
+                        @foreach (var genero in Model.Filme.Generos.Split('|'))
+                        {
+                            <text>- </text> <a href="/Search/Genre/@genero" title="Pesquisar mais filmes de @genero">@genero</a><br />
+                        }
+                    </span>
+                    <br />
+                    @if (Model.Filme.TrailerYoutube != "")
+                    {
+                        <button id="botaoTrailer">Trailer</button>
+                    }
+                </td>
+                <td valign="top">
+                    <h2><a href="/Search/Movie/@Model.Filme.Nome" title="Pesquisar outros torrents enviados para o filme '@Model.Filme.Nome'">@Model.Filme.Nome</a></h2>
+                    <div class="padded" style="margin-top: 5px; text-align: justify;"><span id="sinopseFilme">@Model.Filme.Sinopse</span></div>
+                    <div class="padded" style="margin-top: 5px;">
+                        <span id="castFilme">
+                            @foreach (var castMember in Model.Filme.Papels)
+                            {
+                                <a href="/Search/Actor/@castMember.Ator.Nome" title="Pesquisar mais filmes com @castMember.Ator.Nome">@castMember.Ator.Nome</a><text> - </text> @castMember.NomePersonagem <br />
+                            }
+                        </span>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Vídeo:
+                </td>
+                <td>@Model.CodecVideo @Model.Resolucao
+                </td>
+            </tr>
+            <tr>
+                <td>Áudio:
+                </td>
+                <td>@Model.CodecAudio @Model.Audio
+                </td>
+            </tr>
+            <tr>
+                <td>Dublado:
+                </td>
+                <td>@(Model.Dublado ? "Sim" : "Não")
+                </td>
+            </tr>
+            <tr>
+                <td>Legendas:
+                </td>
+                <td>
+                    @if (Model.Filme.Legendas.Count() == 0)
+                    {
+                        <text>Não há</text>
+                    }
+                    else
+                    {
+                        <table id="tableLegendas">
+                            @foreach (var legenda in Model.Filme.Legendas)
+                            {
+                                <tr>
+                                    <td style="width: 300px;">@legenda.Arquivo
+                                    </td>
+                                    <td>@legenda.Idioma
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td>Tamanho:
+                </td>
+                <td>
+                    @BitSharePortal.Services.TorrentServices.TamanhoFormat(Model.Tamanho)
+                    <button id="botaoArquivos">Mostrar Arquivos</button>
+                    <br />
+                    <table id="tableArquivos">
+                        @foreach (var arquivo in Model.ArquivoTorrents)
+                        {
+                            <tr>
+                                <td style="width: 300px;">
+                                    @arquivo.Nome
+                                </td>
+                                <td style="width: 100px;">
+                                    @BitSharePortal.Services.TorrentServices.TamanhoFormat(arquivo.Tamanho)
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>Enviado por:
+                </td>
+                <td>
+                    <a href="/Users/Profile/@Model.UsuarioLancamento.IdUsuario">@Model.UsuarioLancamento.Nome</a>
+                </td>
+            </tr>
+             <tr>
+                <td>Enviado em:
+                </td>
+                <td>
+                    @Model.DataLancamento.ToString("dd/MM/yyyy HH:mm")
+                </td>
+            </tr>
+            <tr>
+                <td>Hash:
+                </td>
+                <td>
+                    @Model.HashInfo
+                </td>
+            </tr>
+            <tr>
+                <td>Seeders:
+                </td>
+                <td>
+                    @Model.TorrentSeeds.Count()
+                    <button id="botaoSeeders">Mostrar Seeders</button>
+                    <br />
+                    <table id="tableSeeders">
+                        @foreach (var seed in Model.TorrentSeeds)
+                        {
+                            <tr>
+                                <td style="width: 100px;">
+                                    <a href="/Users/Profile/@seed.Usuario.IdUsuario">@seed.Usuario.Nome</a>
+                                </td>
+                                <td style="width: 100px;">
+                                    @seed.ClienteTorrent
+                                </td>
+                                <td style="width: 60px;">
+                                    <img src="../../Content/Images/arrowdown.gif" alt="Downloaded" />
+                                    @BitSharePortal.Services.TorrentServices.TamanhoFormat(seed.Downloaded)
+                                </td>
+                                <td style="width: 60px;">
+                                    <img src="../../Content/Images/arrowup.gif" alt="Uploaded" />
+                                    @BitSharePortal.Services.TorrentServices.TamanhoFormat(seed.Uploaded)
+                                </td>
+                                <td style="width: 40px;">
+                                    @String.Format("{0:0.00}%", (seed.Downloaded / Model.Tamanho) * 100)
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>Leechers:
+                </td>
+                <td>
+                    @Model.TorrentLeeches.Count()
+                    <button id="botaoLeechers">Mostrar Leechers</button>
+                    <br />
+                    <table id="tableLeechers">
+                        @foreach (var leech in Model.TorrentLeeches)
+                        {
+                            <tr>
+                                <td style="width: 100px;">
+                                    <a href="/Users/Profile/@leech.Usuario.IdUsuario">@leech.Usuario.Nome</a>
+                                </td>
+                                <td style="width: 100px;">
+                                    @leech.ClienteTorrent
+                                </td>
+                                <td style="width: 60px;">
+                                    <img src="../../Content/Images/arrowdown.gif" alt="Downloaded" />
+                                    @BitSharePortal.Services.TorrentServices.TamanhoFormat(leech.Downloaded)
+                                </td>
+                                <td style="width: 60px;">
+                                    <img src="../../Content/Images/arrowup.gif" alt="Uploaded" />
+                                    @BitSharePortal.Services.TorrentServices.TamanhoFormat(leech.Uploaded)
+                                </td>
+                                <td style="width: 40px;">
+                                    @String.Format("{0:0.00}%", (leech.Downloaded / Model.Tamanho) * 100)
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>Comentários:
+                </td>
+                <td>
+                    <button id="botaoComentario">Adicionar Comentário</button>
+                    <table id="tableComentarios">
+                        @foreach(var coment in Model.Comentarios)
+                        {
+                        <tr>
+                            <td style="width: 100px;"><a href="/Users/Profile/@coment.Usuario.IdUsuario">@coment.Usuario.Nome</a>
+                            </td>
+                            <td style="width: 600px;">@Html.Raw(coment.TextoComentario)
+                            </td>
+                        </tr>
+                        }
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

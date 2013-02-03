@@ -10,13 +10,10 @@
     border-style: solid;
     border-color: silver;
 }
-
 #botaoPesquisar {
         font: 98% "Trebuchet MS", sans-serif;
 }
-
 </style>
-
 <script>
     $(function () {
         $(".downloadTorrentButton").button({
@@ -31,9 +28,13 @@
                 primary: "ui-icon-search"
             }
         });
+
+
+        $(".linkDetail").click(function () {
+            Carregando("Carregando Detalhes do Torrent");
+        });
     });
 </script>
-
 <div id="torrentsContainer" class="borderedDiv">
     <div class="ui-widget-header padded">Pesquisar Torrents</div>
         <div class="padded">
@@ -42,7 +43,6 @@
                 <div style="width:200px; float:left;">Categoria: <select><option>Selecione...</option><option>Filmes</option><option>Games</option><option>XXX</option></select></div> 
                 <div style="float:right;"><button id="botaoPesquisar">Pesquisar</button></div>
             }
-            
         </div>
     <br style="clear: both;" />
     <div id="torrentsList" class="borderedDiv padded">
@@ -57,21 +57,19 @@
                 <td width="20" align="center"><a href="#"><span title="Leechers" class="ui-icon ui-icon-arrowthick-1-s" style="display:inline-block"></span></a></td>
                 <td width="90" align="center">Uploader</td>
             </tr>
-
             @foreach (var torrent in (List<BitSharePortal.Models.TorrentModel>)ViewBag.ListaTorrents)
             {
                 <tr>
-                    <td><a href="Download/@torrent.IdTorrent.ToString()"><button class="downloadTorrentButton">Download .torrent</button></a></td>
-                    <td><a href="Detail/@torrent.IdTorrent.ToString()" title="Detalhes do torrent">@torrent.Nome</a></td>
+                    <td><a class="linkDownload" href="Download/@torrent.IdTorrent.ToString()"><button class="downloadTorrentButton">Download .torrent</button></a></td>
+                    <td><a class="linkDetail" href="Detail/@torrent.IdTorrent.ToString()" title="Detalhes do torrent">@torrent.Nome</a></td>
                     <td align="center">@torrent.TamanhoTorrent</td>
-                    <td align="center">@torrent.DataLancamento.ToString("dd/MM/yyyy hh:mm")</td>
+                    <td align="center">@torrent.DataLancamento.ToString("dd/MM/yyyy HH:mm")</td>
                     <td align="center">@torrent.Downloads</td>
                     <td align="center">@torrent.Seeds</td>
                     <td align="center">@torrent.Leechers</td>
                     <td align="center"><a href="#">@torrent.UsuarioLancamento</a></td>
                 </tr>
             }
-            
         </table>
     </div>
 </div>

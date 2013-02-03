@@ -11,9 +11,7 @@ namespace BitSharePortal.Models
         [Required(ErrorMessage = "Selecione um filme ou informe a URL do IMDB")]
         public string IdImdb { get; set; }
 
-
         public string Nome { get; set; }
-
 
         public string Categoria { get; set; }
 

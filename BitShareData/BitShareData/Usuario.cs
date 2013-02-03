@@ -246,6 +246,102 @@ namespace BitShareData
             }
         }
         private ICollection<Convite> _convites;
+    
+        public virtual ICollection<Comentario> Comentarios
+        {
+            get
+            {
+                if (_comentarios == null)
+                {
+                    var newCollection = new FixupCollection<Comentario>();
+                    newCollection.CollectionChanged += FixupComentarios;
+                    _comentarios = newCollection;
+                }
+                return _comentarios;
+            }
+            set
+            {
+                if (!ReferenceEquals(_comentarios, value))
+                {
+                    var previousValue = _comentarios as FixupCollection<Comentario>;
+                    if (previousValue != null)
+                    {
+                        previousValue.CollectionChanged -= FixupComentarios;
+                    }
+                    _comentarios = value;
+                    var newValue = value as FixupCollection<Comentario>;
+                    if (newValue != null)
+                    {
+                        newValue.CollectionChanged += FixupComentarios;
+                    }
+                }
+            }
+        }
+        private ICollection<Comentario> _comentarios;
+    
+        public virtual ICollection<Mensagem> MensagensSaida
+        {
+            get
+            {
+                if (_mensagensSaida == null)
+                {
+                    var newCollection = new FixupCollection<Mensagem>();
+                    newCollection.CollectionChanged += FixupMensagensSaida;
+                    _mensagensSaida = newCollection;
+                }
+                return _mensagensSaida;
+            }
+            set
+            {
+                if (!ReferenceEquals(_mensagensSaida, value))
+                {
+                    var previousValue = _mensagensSaida as FixupCollection<Mensagem>;
+                    if (previousValue != null)
+                    {
+                        previousValue.CollectionChanged -= FixupMensagensSaida;
+                    }
+                    _mensagensSaida = value;
+                    var newValue = value as FixupCollection<Mensagem>;
+                    if (newValue != null)
+                    {
+                        newValue.CollectionChanged += FixupMensagensSaida;
+                    }
+                }
+            }
+        }
+        private ICollection<Mensagem> _mensagensSaida;
+    
+        public virtual ICollection<Mensagem> MensagensEntrada
+        {
+            get
+            {
+                if (_mensagensEntrada == null)
+                {
+                    var newCollection = new FixupCollection<Mensagem>();
+                    newCollection.CollectionChanged += FixupMensagensEntrada;
+                    _mensagensEntrada = newCollection;
+                }
+                return _mensagensEntrada;
+            }
+            set
+            {
+                if (!ReferenceEquals(_mensagensEntrada, value))
+                {
+                    var previousValue = _mensagensEntrada as FixupCollection<Mensagem>;
+                    if (previousValue != null)
+                    {
+                        previousValue.CollectionChanged -= FixupMensagensEntrada;
+                    }
+                    _mensagensEntrada = value;
+                    var newValue = value as FixupCollection<Mensagem>;
+                    if (newValue != null)
+                    {
+                        newValue.CollectionChanged += FixupMensagensEntrada;
+                    }
+                }
+            }
+        }
+        private ICollection<Mensagem> _mensagensEntrada;
 
         #endregion
 
@@ -334,6 +430,72 @@ namespace BitShareData
                     if (ReferenceEquals(item.Usuario, this))
                     {
                         item.Usuario = null;
+                    }
+                }
+            }
+        }
+    
+        private void FixupComentarios(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (Comentario item in e.NewItems)
+                {
+                    item.Usuario = this;
+                }
+            }
+    
+            if (e.OldItems != null)
+            {
+                foreach (Comentario item in e.OldItems)
+                {
+                    if (ReferenceEquals(item.Usuario, this))
+                    {
+                        item.Usuario = null;
+                    }
+                }
+            }
+        }
+    
+        private void FixupMensagensSaida(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (Mensagem item in e.NewItems)
+                {
+                    item.UsuarioDe = this;
+                }
+            }
+    
+            if (e.OldItems != null)
+            {
+                foreach (Mensagem item in e.OldItems)
+                {
+                    if (ReferenceEquals(item.UsuarioDe, this))
+                    {
+                        item.UsuarioDe = null;
+                    }
+                }
+            }
+        }
+    
+        private void FixupMensagensEntrada(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (Mensagem item in e.NewItems)
+                {
+                    item.UsuarioPara = this;
+                }
+            }
+    
+            if (e.OldItems != null)
+            {
+                foreach (Mensagem item in e.OldItems)
+                {
+                    if (ReferenceEquals(item.UsuarioPara, this))
+                    {
+                        item.UsuarioPara = null;
                     }
                 }
             }

@@ -19,6 +19,9 @@
     <EntitySet Name="Atores" EntityType="BitShare.Store.Atores" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Filmes" EntityType="BitShare.Store.Filmes" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Papeis" EntityType="BitShare.Store.Papeis" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="PackFilmes" EntityType="BitShare.Store.PackFilmes" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Comentarios" EntityType="BitShare.Store.Comentarios" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Mensagens" EntityType="BitShare.Store.Mensagens" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="UsuarioTorrent" Association="BitShare.Store.UsuarioTorrent">
       <End Role="Usuario" EntitySet="Usuarios" />
       <End Role="Torrent" EntitySet="Torrents" />
@@ -62,6 +65,26 @@
     <AssociationSet Name="FilmeLegenda" Association="BitShare.Store.FilmeLegenda">
       <End Role="Filme" EntitySet="Filmes" />
       <End Role="Legenda" EntitySet="Legendas" />
+    </AssociationSet>
+    <AssociationSet Name="PackFilmeFilme" Association="BitShare.Store.PackFilmeFilme">
+      <End Role="PackFilme" EntitySet="PackFilmes" />
+      <End Role="Filme" EntitySet="Filmes" />
+    </AssociationSet>
+    <AssociationSet Name="TorrentComentario" Association="BitShare.Store.TorrentComentario">
+      <End Role="Torrent" EntitySet="Torrents" />
+      <End Role="Comentario" EntitySet="Comentarios" />
+    </AssociationSet>
+    <AssociationSet Name="UsuarioComentario" Association="BitShare.Store.UsuarioComentario">
+      <End Role="Usuario" EntitySet="Usuarios" />
+      <End Role="Comentario" EntitySet="Comentarios" />
+    </AssociationSet>
+    <AssociationSet Name="UsuarioMensagem" Association="BitShare.Store.UsuarioMensagem">
+      <End Role="Usuario" EntitySet="Usuarios" />
+      <End Role="Mensagem" EntitySet="Mensagens" />
+    </AssociationSet>
+    <AssociationSet Name="UsuarioMensagem1" Association="BitShare.Store.UsuarioMensagem1">
+      <End Role="Usuario" EntitySet="Usuarios" />
+      <End Role="Mensagem" EntitySet="Mensagens" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="Usuarios">
@@ -213,6 +236,8 @@
     <Property Name="Generos" Type="nvarchar(max)" Nullable="false" />
     <Property Name="TrailerYoutube" Type="nvarchar(max)" Nullable="false" />
     <Property Name="ScreenShots" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Duracao" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="PackFilme_IdPack" Type="int" Nullable="true" />
   </EntityType>
   <EntityType Name="Papeis">
     <Key>
@@ -222,6 +247,33 @@
     <Property Name="NomePersonagem" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Filme_IdFilme" Type="int" Nullable="false" />
     <Property Name="Ator_IdAtor" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="PackFilmes">
+    <Key>
+      <PropertyRef Name="IdPack" />
+    </Key>
+    <Property Name="IdPack" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="NomePack" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Comentarios">
+    <Key>
+      <PropertyRef Name="IdComentario" />
+    </Key>
+    <Property Name="IdComentario" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TextoComentario" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Torrent_IdTorrent" Type="int" Nullable="false" />
+    <Property Name="Usuario_IdUsuario" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Mensagens">
+    <Key>
+      <PropertyRef Name="IdMensagem" />
+    </Key>
+    <Property Name="IdMensagem" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="AssuntoMensagem" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="TextoMensagem" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Lida" Type="bit" Nullable="false" />
+    <Property Name="UsuarioDe_IdUsuario" Type="int" Nullable="false" />
+    <Property Name="UsuarioPara_IdUsuario" Type="int" Nullable="false" />
   </EntityType>
   <Association Name="UsuarioTorrent">
     <End Role="Usuario" Type="BitShare.Store.Usuarios" Multiplicity="1" />
@@ -355,6 +407,66 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="PackFilmeFilme">
+    <End Role="PackFilme" Type="BitShare.Store.PackFilmes" Multiplicity="0..1" />
+    <End Role="Filme" Type="BitShare.Store.Filmes" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PackFilme">
+        <PropertyRef Name="IdPack" />
+      </Principal>
+      <Dependent Role="Filme">
+        <PropertyRef Name="PackFilme_IdPack" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="TorrentComentario">
+    <End Role="Torrent" Type="BitShare.Store.Torrents" Multiplicity="1" />
+    <End Role="Comentario" Type="BitShare.Store.Comentarios" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Torrent">
+        <PropertyRef Name="IdTorrent" />
+      </Principal>
+      <Dependent Role="Comentario">
+        <PropertyRef Name="Torrent_IdTorrent" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="UsuarioComentario">
+    <End Role="Usuario" Type="BitShare.Store.Usuarios" Multiplicity="1" />
+    <End Role="Comentario" Type="BitShare.Store.Comentarios" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuario">
+        <PropertyRef Name="IdUsuario" />
+      </Principal>
+      <Dependent Role="Comentario">
+        <PropertyRef Name="Usuario_IdUsuario" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="UsuarioMensagem">
+    <End Role="Usuario" Type="BitShare.Store.Usuarios" Multiplicity="1" />
+    <End Role="Mensagem" Type="BitShare.Store.Mensagens" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuario">
+        <PropertyRef Name="IdUsuario" />
+      </Principal>
+      <Dependent Role="Mensagem">
+        <PropertyRef Name="UsuarioDe_IdUsuario" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="UsuarioMensagem1">
+    <End Role="Usuario" Type="BitShare.Store.Usuarios" Multiplicity="1" />
+    <End Role="Mensagem" Type="BitShare.Store.Mensagens" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuario">
+        <PropertyRef Name="IdUsuario" />
+      </Principal>
+      <Dependent Role="Mensagem">
+        <PropertyRef Name="UsuarioPara_IdUsuario" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -417,6 +529,29 @@
             <End Role="Filme" EntitySet="Filmes" />
             <End Role="Legenda" EntitySet="Legendas" />
           </AssociationSet>
+          <EntitySet Name="PackFilmes" EntityType="BitShare.PackFilme" />
+          <AssociationSet Name="PackFilmeFilme" Association="BitShare.PackFilmeFilme">
+            <End Role="PackFilme" EntitySet="PackFilmes" />
+            <End Role="Filme" EntitySet="Filmes" />
+          </AssociationSet>
+          <EntitySet Name="Comentarios" EntityType="BitShare.Comentario" />
+          <AssociationSet Name="TorrentComentario" Association="BitShare.TorrentComentario">
+            <End Role="Torrent" EntitySet="Torrents" />
+            <End Role="Comentario" EntitySet="Comentarios" />
+          </AssociationSet>
+          <AssociationSet Name="UsuarioComentario" Association="BitShare.UsuarioComentario">
+            <End Role="Usuario" EntitySet="Usuarios" />
+            <End Role="Comentario" EntitySet="Comentarios" />
+          </AssociationSet>
+          <EntitySet Name="Mensagens" EntityType="BitShare.Mensagem" />
+          <AssociationSet Name="UsuarioMensagem" Association="BitShare.UsuarioMensagem">
+            <End Role="Usuario" EntitySet="Usuarios" />
+            <End Role="Mensagem" EntitySet="Mensagens" />
+          </AssociationSet>
+          <AssociationSet Name="UsuarioMensagem1" Association="BitShare.UsuarioMensagem1">
+            <End Role="Usuario" EntitySet="Usuarios" />
+            <End Role="Mensagem" EntitySet="Mensagens" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Usuario">
           <Key>
@@ -442,6 +577,9 @@
           <NavigationProperty Name="Convites" Relationship="BitShare.UsuarioConvite" FromRole="Usuario" ToRole="Convite" />
           <Property Type="Double" Name="Bonus" Nullable="false" />
           <Property Type="Int32" Name="ConvitesDisponiveis" Nullable="false" />
+          <NavigationProperty Name="Comentarios" Relationship="BitShare.UsuarioComentario" FromRole="Usuario" ToRole="Comentario" />
+          <NavigationProperty Name="MensagensSaida" Relationship="BitShare.UsuarioMensagem" FromRole="Usuario" ToRole="Mensagem" />
+          <NavigationProperty Name="MensagensEntrada" Relationship="BitShare.UsuarioMensagem1" FromRole="Usuario" ToRole="Mensagem" />
         </EntityType>
         <EntityType Name="Torrent">
           <Key>
@@ -471,6 +609,7 @@
           <Property Type="String" Name="CodecVideo" Nullable="false" />
           <Property Type="Boolean" Name="Dublado" Nullable="false" />
           <Property Type="String" Name="Observacoes" Nullable="false" />
+          <NavigationProperty Name="Comentarios" Relationship="BitShare.TorrentComentario" FromRole="Torrent" ToRole="Comentario" />
         </EntityType>
         <Association Name="UsuarioTorrent">
           <End Type="BitShare.Usuario" Role="Usuario" Multiplicity="1" />
@@ -606,6 +745,8 @@
           <Property Type="String" Name="TrailerYoutube" Nullable="false" />
           <Property Type="String" Name="ScreenShots" Nullable="false" />
           <NavigationProperty Name="Legendas" Relationship="BitShare.FilmeLegenda" FromRole="Filme" ToRole="Legenda" />
+          <NavigationProperty Name="PackFilme" Relationship="BitShare.PackFilmeFilme" FromRole="Filme" ToRole="PackFilme" />
+          <Property Type="String" Name="Duracao" Nullable="false" />
         </EntityType>
         <EntityType Name="Papel">
           <Key>
@@ -631,6 +772,54 @@
         <Association Name="FilmeLegenda">
           <End Type="BitShare.Filme" Role="Filme" Multiplicity="1" />
           <End Type="BitShare.Legenda" Role="Legenda" Multiplicity="*" />
+        </Association>
+        <EntityType Name="PackFilme">
+          <Key>
+            <PropertyRef Name="IdPack" />
+          </Key>
+          <Property Type="Int32" Name="IdPack" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="NomePack" Nullable="false" />
+          <NavigationProperty Name="Filmes" Relationship="BitShare.PackFilmeFilme" FromRole="PackFilme" ToRole="Filme" />
+        </EntityType>
+        <Association Name="PackFilmeFilme">
+          <End Type="BitShare.PackFilme" Role="PackFilme" Multiplicity="0..1" />
+          <End Type="BitShare.Filme" Role="Filme" Multiplicity="*" />
+        </Association>
+        <EntityType Name="Comentario">
+          <Key>
+            <PropertyRef Name="IdComentario" />
+          </Key>
+          <Property Type="Int32" Name="IdComentario" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="TextoComentario" Nullable="false" />
+          <NavigationProperty Name="Torrent" Relationship="BitShare.TorrentComentario" FromRole="Comentario" ToRole="Torrent" />
+          <NavigationProperty Name="Usuario" Relationship="BitShare.UsuarioComentario" FromRole="Comentario" ToRole="Usuario" />
+        </EntityType>
+        <Association Name="TorrentComentario">
+          <End Type="BitShare.Torrent" Role="Torrent" Multiplicity="1" />
+          <End Type="BitShare.Comentario" Role="Comentario" Multiplicity="*" />
+        </Association>
+        <Association Name="UsuarioComentario">
+          <End Type="BitShare.Usuario" Role="Usuario" Multiplicity="1" />
+          <End Type="BitShare.Comentario" Role="Comentario" Multiplicity="*" />
+        </Association>
+        <EntityType Name="Mensagem">
+          <Key>
+            <PropertyRef Name="IdMensagem" />
+          </Key>
+          <Property Type="Int32" Name="IdMensagem" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="AssuntoMensagem" Nullable="false" />
+          <Property Type="String" Name="TextoMensagem" Nullable="false" />
+          <Property Type="Boolean" Name="Lida" Nullable="false" />
+          <NavigationProperty Name="UsuarioDe" Relationship="BitShare.UsuarioMensagem" FromRole="Mensagem" ToRole="Usuario" />
+          <NavigationProperty Name="UsuarioPara" Relationship="BitShare.UsuarioMensagem1" FromRole="Mensagem" ToRole="Usuario" />
+        </EntityType>
+        <Association Name="UsuarioMensagem">
+          <End Type="BitShare.Usuario" Role="Usuario" Multiplicity="1" />
+          <End Type="BitShare.Mensagem" Role="Mensagem" Multiplicity="*" />
+        </Association>
+        <Association Name="UsuarioMensagem1">
+          <End Type="BitShare.Usuario" Role="Usuario" Multiplicity="1" />
+          <End Type="BitShare.Mensagem" Role="Mensagem" Multiplicity="*" />
         </Association>
       </Schema>
     </edmx:ConceptualModels>
@@ -788,6 +977,7 @@
           <ScalarProperty Name="Generos" ColumnName="Generos" />
           <ScalarProperty Name="TrailerYoutube" ColumnName="TrailerYoutube" />
           <ScalarProperty Name="ScreenShots" ColumnName="ScreenShots" />
+          <ScalarProperty Name="Duracao" ColumnName="Duracao" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -796,6 +986,32 @@
         <MappingFragment StoreEntitySet="Papeis">
           <ScalarProperty Name="IdPapel" ColumnName="IdPapel" />
           <ScalarProperty Name="NomePersonagem" ColumnName="NomePersonagem" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PackFilmes">
+      <EntityTypeMapping TypeName="IsTypeOf(BitShare.PackFilme)">
+        <MappingFragment StoreEntitySet="PackFilmes">
+          <ScalarProperty Name="IdPack" ColumnName="IdPack" />
+          <ScalarProperty Name="NomePack" ColumnName="NomePack" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Comentarios">
+      <EntityTypeMapping TypeName="IsTypeOf(BitShare.Comentario)">
+        <MappingFragment StoreEntitySet="Comentarios">
+          <ScalarProperty Name="IdComentario" ColumnName="IdComentario" />
+          <ScalarProperty Name="TextoComentario" ColumnName="TextoComentario" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Mensagens">
+      <EntityTypeMapping TypeName="IsTypeOf(BitShare.Mensagem)">
+        <MappingFragment StoreEntitySet="Mensagens">
+          <ScalarProperty Name="IdMensagem" ColumnName="IdMensagem" />
+          <ScalarProperty Name="AssuntoMensagem" ColumnName="AssuntoMensagem" />
+          <ScalarProperty Name="TextoMensagem" ColumnName="TextoMensagem" />
+          <ScalarProperty Name="Lida" ColumnName="Lida" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -885,6 +1101,47 @@
       </EndProperty>
       <EndProperty Name="Legenda">
         <ScalarProperty Name="IdLegenda" ColumnName="IdLegenda" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="PackFilmeFilme" TypeName="BitShare.PackFilmeFilme" StoreEntitySet="Filmes">
+      <EndProperty Name="PackFilme">
+        <ScalarProperty Name="IdPack" ColumnName="PackFilme_IdPack" />
+      </EndProperty>
+      <EndProperty Name="Filme">
+        <ScalarProperty Name="IdFilme" ColumnName="IdFilme" />
+      </EndProperty>
+      <Condition ColumnName="PackFilme_IdPack" IsNull="false" />
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="TorrentComentario" TypeName="BitShare.TorrentComentario" StoreEntitySet="Comentarios">
+      <EndProperty Name="Torrent">
+        <ScalarProperty Name="IdTorrent" ColumnName="Torrent_IdTorrent" />
+      </EndProperty>
+      <EndProperty Name="Comentario">
+        <ScalarProperty Name="IdComentario" ColumnName="IdComentario" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="UsuarioComentario" TypeName="BitShare.UsuarioComentario" StoreEntitySet="Comentarios">
+      <EndProperty Name="Usuario">
+        <ScalarProperty Name="IdUsuario" ColumnName="Usuario_IdUsuario" />
+      </EndProperty>
+      <EndProperty Name="Comentario">
+        <ScalarProperty Name="IdComentario" ColumnName="IdComentario" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="UsuarioMensagem" TypeName="BitShare.UsuarioMensagem" StoreEntitySet="Mensagens">
+      <EndProperty Name="Usuario">
+        <ScalarProperty Name="IdUsuario" ColumnName="UsuarioDe_IdUsuario" />
+      </EndProperty>
+      <EndProperty Name="Mensagem">
+        <ScalarProperty Name="IdMensagem" ColumnName="IdMensagem" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="UsuarioMensagem1" TypeName="BitShare.UsuarioMensagem1" StoreEntitySet="Mensagens">
+      <EndProperty Name="Usuario">
+        <ScalarProperty Name="IdUsuario" ColumnName="UsuarioPara_IdUsuario" />
+      </EndProperty>
+      <EndProperty Name="Mensagem">
+        <ScalarProperty Name="IdMensagem" ColumnName="IdMensagem" />
       </EndProperty>
     </AssociationSetMapping>
   </EntityContainerMapping>

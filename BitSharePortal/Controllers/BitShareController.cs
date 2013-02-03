@@ -10,6 +10,7 @@ using System.IO;
 
 namespace BitSharePortal.Controllers
 {
+    [Compress]
     public class BitShareController : Controller
     {
         /// <summary>
@@ -54,6 +55,24 @@ namespace BitSharePortal.Controllers
                 Session["UsuarioLogado"] = value;
                 DataAtualizacaoDadosUsuario = DateTime.Now;
             }
+        }
+
+        /// <summary>
+        /// Pasta física onde estão armazenados os arquivos .torrent
+        /// </summary>
+        public string PastaTorrents
+        {
+            get
+            { return Server.MapPath("/Torrents"); }
+        }
+
+        /// <summary>
+        /// Pasta física onde estão armazenados os arquivos de legenda
+        /// </summary>
+        public string PastaLegendas
+        {
+            get
+            { return Server.MapPath("/Legendas"); }
         }
 
         /// <summary>
@@ -149,38 +168,7 @@ namespace BitSharePortal.Controllers
             return listaRetorno;
         }
 
-        /// <summary>
-        /// Carrega um filme via serviço REST
-        /// </summary>
-        /// <param name="id">ID do Imdb do filme</param>
-        protected FilmeIMDBJsonResult CarregarFilmeImdb(string id)
-        {
-            var filme = new FilmeIMDBJsonResult();
-
-            try
-            {
-                var request = WebRequest.Create(String.Format("http://www.bit-share-rest.net/Movies/GetComplete/?id={0}&JsonCallback=callback", id)) as HttpWebRequest;
-                using (var response = request.GetResponse() as HttpWebResponse)
-                {
-                    if (response.StatusCode != HttpStatusCode.OK)
-                        throw new Exception(String.Format(
-                        "Server error (HTTP {0}: {1}).",
-                        response.StatusCode,
-                        response.StatusDescription));
-                    JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-                    using (var streamReader = new StreamReader(response.GetResponseStream()))
-                    {
-                        var responseText = streamReader.ReadToEnd();
-                        filme = jsonSerializer.Deserialize<FilmeIMDBJsonResult>(responseText.Replace("callback(", "").Replace(");", ""));
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                throw;
-            }
-
-            return filme;
-        }
+        protected string queryBase = "select t.IdTorrent, t.Nome, t.Tamanho, t.Seeds, t.Leechers, t.DataLancamento, 0 as Downloads, u.Nome as UsuarioLancamento From Torrents t Inner Join Usuarios u on u.IdUsuario = t.UsuarioLancamento_IdUsuario"; 
+       
     }
 }

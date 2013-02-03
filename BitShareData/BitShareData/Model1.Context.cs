@@ -119,6 +119,24 @@ namespace BitShareData
             get { return _papeis  ?? (_papeis = CreateObjectSet<Papel>("Papeis")); }
         }
         private ObjectSet<Papel> _papeis;
+    
+        public ObjectSet<PackFilme> PackFilmes
+        {
+            get { return _packFilmes  ?? (_packFilmes = CreateObjectSet<PackFilme>("PackFilmes")); }
+        }
+        private ObjectSet<PackFilme> _packFilmes;
+    
+        public ObjectSet<Comentario> Comentarios
+        {
+            get { return _comentarios  ?? (_comentarios = CreateObjectSet<Comentario>("Comentarios")); }
+        }
+        private ObjectSet<Comentario> _comentarios;
+    
+        public ObjectSet<Mensagem> Mensagens
+        {
+            get { return _mensagens  ?? (_mensagens = CreateObjectSet<Mensagem>("Mensagens")); }
+        }
+        private ObjectSet<Mensagem> _mensagens;
 
         #endregion
 

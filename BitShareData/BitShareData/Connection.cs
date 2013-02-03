@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.SqlClient;
 
 namespace BitShareData
@@ -9,7 +10,7 @@ namespace BitShareData
     /// </summary>
     public static class Connection
     {
-        private static string connectionString = "data source=bit-share.net;initial catalog=BitShareDB;user id=bitsharer;password=iwillshare;";
+        private static string connectionString = String.Format("data source={0};initial catalog=BitShareDB;user id=bitsharer;password=iwillshare;", ConfigurationSettings.AppSettings["DataServer"]);
 
         private static SqlConnection connectionSQL;
 

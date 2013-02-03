@@ -1,0 +1,124 @@
+﻿@model IPagedList<BitSharePortal.Models.TorrentModel>
+@using PagedList.Mvc;
+@using PagedList;
+<style>
+    /* override na classe td, para as linhas da tabela não ficarem muito grandes*/
+    td {
+        padding: 0px 5px 0px 5px;
+        border-width: 0 0 1px 1px;
+        border-spacing: 0;
+        border-collapse: collapse;
+        border-style: solid;
+        border-color: silver;
+    }
+
+    #botaoPesquisar {
+        font: 98% "Trebuchet MS", sans-serif;
+    }
+</style>
+<script>
+    $(function () {
+        $(".downloadTorrentButton").button({
+            icons: {
+                primary: "ui-icon-disk"
+            },
+            text: false
+        });
+
+        $("#botaoPesquisar").button({
+            icons: {
+                primary: "ui-icon-search"
+            }
+        }).click(function () {
+            Carregando("Pesquisando");
+        });
+
+        $(".linkDetail").click(function () {
+            Carregando("Carregando Detalhes do Torrent");
+        });
+
+        @if(ViewBag.Pesquisa != null)
+        {
+            <text>
+        $("#Pesquisa").val("@ViewBag.Pesquisa");
+            </text>
+        }
+        @if(ViewBag.ProcurarPor != null)
+        {
+            <text>
+        $("select option").filter(function () {
+            return $(this).val() == "@ViewBag.ProcurarPor";
+        }).attr('selected', true);
+            </text>
+        }
+    });
+</script>
+<link href="../Content/PagedList.css" type="text/javascript" rel="Stylesheet" />
+<div id="torrentsContainer" class="borderedDiv">
+    <div class="ui-widget-header padded">Pesquisar Torrents</div>
+    <div class="padded">
+        @using (Html.BeginForm("Pesquisar", "Search", FormMethod.Post))
+        {
+            <div style="width: 500px; float: left;">
+                Pesquisa:
+                <input type="text" id="Pesquisa" name="Pesquisa" style="width: 400px;" />
+            </div>
+            <div style="width: 250px; float: left;">
+                Procurar por:
+                <select id="ProcurarPor" name="ProcurarPor">
+                    <option value="Tudo">Tudo</option>
+                    <option value="Filme">Filme</option>
+                    <option value="Ator">Ator</option>
+                    <option value="Personagem">Personagem</option>
+                    <option value="Diretor">Diretor</option>
+                    <option value="Ano">Ano de Lançamento</option>
+                    <option value="Genero">Gênero</option>
+                </select>
+            </div> 
+            <div style="float: right;">
+                <button id="botaoPesquisar">Pesquisar</button>
+            </div>
+        }
+    </div>
+    <br style="clear: both;" />
+    @if (ViewBag.MensagemResultado != null)
+    {
+        <div class="ui-widget-header padded">@ViewBag.MensagemResultado:</div>
+    }
+    <div id="torrentsList" class="borderedDiv padded">
+        <table>
+            <tr class="ui-widget-header">
+                <td></td>
+                <td width="450">Torrent</td>
+                <td width="60" align="center"><span title="Tamanho" class="ui-icon ui-icon-info" style="display: inline-block"></span></td>
+                <td width="95" align="center"><span title="Adicionado" class="ui-icon ui-icon-clock" style="display: inline-block"></span></td>
+                <td width="20" align="center"><span title="Baixado" class="ui-icon ui-icon-check" style="display: inline-block"></span></td>
+                <td width="20" align="center"><span title="Seeders" class="ui-icon ui-icon-arrowthick-1-n" style="display: inline-block"></span></td>
+                <td width="20" align="center"><a href="#"><span title="Leechers" class="ui-icon ui-icon-arrowthick-1-s" style="display: inline-block"></span></a></td>
+                <td width="90" align="center">Uploader</td>
+            </tr>
+            @foreach (var torrent in Model)
+            {
+                <tr>
+                    <td><a class="linkDownload" href="/torrents/download/@torrent.IdTorrent.ToString()">
+                        <button class="downloadTorrentButton">Download .torrent</button></a></td>
+                    <td><a class="linkDetail" href="/torrents/detail/@torrent.IdTorrent.ToString()" title="Detalhes do torrent">@torrent.Nome</a>
+                        @if (torrent.RelevanciaResultado != null && torrent.RelevanciaResultado != "")
+                        {
+                        <text>
+                            <br /><span style="font: 88% 'Trebuchet MS', sans-serif;">Pesquisa com resultado em: @torrent.RelevanciaResultado</span>
+                        </text>
+                        }
+                    </td>
+                    <td align="center">@torrent.TamanhoTorrent</td>
+                    <td align="center">@torrent.DataLancamento.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td align="center">@torrent.Downloads</td>
+                    <td align="center">@torrent.Seeds</td>
+                    <td align="center">@torrent.Leechers</td>
+                    <td align="center"><a href="#">@torrent.UsuarioLancamento</a></td>
+                </tr>
+            }
+        </table>
+        @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+    </div>
+</div>

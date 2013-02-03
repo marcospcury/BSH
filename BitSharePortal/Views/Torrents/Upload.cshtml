@@ -1,40 +1,21 @@
 ﻿@model BitSharePortal.Models.TorrentUploadModel
+
+@section AddToHead{
 <style>
+     a {
+        font: 98% "Trebuchet MS", sans-serif;
+    }
+
     #botaoUpload, #botaoIMDB, #botaoLegenda {
         font: 98% "Trebuchet MS", sans-serif;
     }
+         .ui-autocomplete-loading {
+         background: white url('../Content/images/ui-anim_basic_16x16.gif') right center no-repeat;
+     }
 
-    a {
-        font: 98% "Trebuchet MS", sans-serif;
-    }
-
-    .ui-autocomplete-loading {
-        background: white url('../Content/images/ui-anim_basic_16x16.gif') right center no-repeat;
-    }
-
-    .autocomplete-container {
-        border-bottom: dotted;
-        border-bottom-width: thin;
-        border-bottom-color: silver;
-        float: left;
-        width: 100%;
-        cursor: pointer;
-    }
-
-    .autocomplete-container-over {
-        background-color: silver;
-        border-bottom: dotted;
-        border-bottom-width: thin;
-        border-bottom-color: silver;
-        float: left;
-        width: 100%;
-        cursor: pointer;
-    }
 </style>
-
 <script>
     $(function () {
-
         $("#botaoUpload").button({
             icons: {
                 primary: "ui-icon-arrowthick-1-n"
@@ -147,24 +128,22 @@
                 .appendTo(ul);
         };
 
-@if (ViewBag.EmValidacao && ViewBag.IdImdb != null)
-{
-    <text>
-        CarregarFilme("@ViewBag.IdImdb");
-    </text>
-}
-else
-{
-    <text>
-        $("#detalhesFilme").hide();
-        $("#torrentsFilme").hide();
-        </text>
-}
-
+        @if (ViewBag.EmValidacao && ViewBag.IdImdb != null)
+        {
+            <text>
+                CarregarFilme("@ViewBag.IdImdb");
+            </text>
+        }
+        else
+        {
+            <text>
+                $("#detalhesFilme").hide();
+                $("#torrentsFilme").hide();
+             </text>
+        }
     });
-
 </script>
-
+}
 <div id="torrentsContainer" class="borderedDiv">
     <div class="ui-widget-header padded">Lançar novo torrent</div>
     @using (Html.BeginForm("Upload", "Torrents", FormMethod.Post, new { enctype = "multipart/form-data" }))
@@ -210,7 +189,7 @@ else
                                             <br />
                                             Gênero: <span id="generoFilme"></span>
                                         </td>
-                                        <td>
+                                        <td valign="top">
                                             <div class="padded" style="margin-top: 5px; text-align: justify;"><span id="sinopseFilme"></span></div>
                                             <div class="padded" style="margin-top: 5px;"><span id="castFilme"></span></div>
                                         </td>

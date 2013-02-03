@@ -262,6 +262,38 @@ namespace BitShareData
             }
         }
         private Filme _filme;
+    
+        public virtual ICollection<Comentario> Comentarios
+        {
+            get
+            {
+                if (_comentarios == null)
+                {
+                    var newCollection = new FixupCollection<Comentario>();
+                    newCollection.CollectionChanged += FixupComentarios;
+                    _comentarios = newCollection;
+                }
+                return _comentarios;
+            }
+            set
+            {
+                if (!ReferenceEquals(_comentarios, value))
+                {
+                    var previousValue = _comentarios as FixupCollection<Comentario>;
+                    if (previousValue != null)
+                    {
+                        previousValue.CollectionChanged -= FixupComentarios;
+                    }
+                    _comentarios = value;
+                    var newValue = value as FixupCollection<Comentario>;
+                    if (newValue != null)
+                    {
+                        newValue.CollectionChanged += FixupComentarios;
+                    }
+                }
+            }
+        }
+        private ICollection<Comentario> _comentarios;
 
         #endregion
 
@@ -356,6 +388,28 @@ namespace BitShareData
             if (e.OldItems != null)
             {
                 foreach (TorrentLeech item in e.OldItems)
+                {
+                    if (ReferenceEquals(item.Torrent, this))
+                    {
+                        item.Torrent = null;
+                    }
+                }
+            }
+        }
+    
+        private void FixupComentarios(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (Comentario item in e.NewItems)
+                {
+                    item.Torrent = this;
+                }
+            }
+    
+            if (e.OldItems != null)
+            {
+                foreach (Comentario item in e.OldItems)
                 {
                     if (ReferenceEquals(item.Torrent, this))
                     {

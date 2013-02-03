@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
+using System.Data.EntityClient;
 using System.Data.Objects;
+using System.Data.SqlClient;
 using System.Linq;
 
 namespace BitShareData
@@ -26,7 +29,22 @@ namespace BitShareData
     /// <typeparam name="T">A POCO that represents an Entity Framework entity</typeparam>
     public class DataRepository<T> : IRepository<T> where T : class
     {
+        private static string ConnectionStringEntities
+        {
+            get
+            {
+                string connectionString = String.Format("data source={0};initial catalog=BitShareDB;user id=bitsharer;password=iwillshare;", ConfigurationSettings.AppSettings["DataServer"]);
 
+                var scsb = new SqlConnectionStringBuilder(connectionString);
+
+                EntityConnectionStringBuilder ecb = new EntityConnectionStringBuilder();
+                ecb.Metadata = "res://*/BitShare.csdl|res://*/BitShare.ssdl|res://*/BitShare.msl";
+                ecb.Provider = "System.Data.SqlClient";
+                ecb.ProviderConnectionString = scsb.ConnectionString;
+
+                return ecb.ConnectionString;
+            }
+        }
         /// <summary>
         /// The context object for the database
         /// </summary>
@@ -47,8 +65,9 @@ namespace BitShareData
         /// Initializes a new instance of the DataRepository class
         /// </summary>
         public DataRepository()
-            : this(new BitShareContainer())
+            : this(new BitShareContainer(ConnectionStringEntities))
         {
+            _context.ContextOptions.LazyLoadingEnabled = true;
         }
 
         /// <summary>

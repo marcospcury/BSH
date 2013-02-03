@@ -2,13 +2,13 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, and Azure
 -- --------------------------------------------------
--- Date Created: 12/13/2012 00:15:48
+-- Date Created: 12/20/2012 15:01:01
 -- Generated from EDMX file: C:\Users\Cury\Documents\GitHub\BSH\BitShareData\BitShareData\BitShare.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
 GO
-USE [BitShareDB];
+USE [BitShareAzure];
 GO
 IF SCHEMA_ID(N'dbo') IS NULL EXECUTE(N'CREATE SCHEMA [dbo]');
 GO
@@ -49,6 +49,21 @@ IF OBJECT_ID(N'[dbo].[FK_FilmeTorrent]', 'F') IS NOT NULL
 GO
 IF OBJECT_ID(N'[dbo].[FK_FilmeLegenda]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Legendas] DROP CONSTRAINT [FK_FilmeLegenda];
+GO
+IF OBJECT_ID(N'[dbo].[FK_PackFilmeFilme]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Filmes] DROP CONSTRAINT [FK_PackFilmeFilme];
+GO
+IF OBJECT_ID(N'[dbo].[FK_TorrentComentario]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Comentarios] DROP CONSTRAINT [FK_TorrentComentario];
+GO
+IF OBJECT_ID(N'[dbo].[FK_UsuarioComentario]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Comentarios] DROP CONSTRAINT [FK_UsuarioComentario];
+GO
+IF OBJECT_ID(N'[dbo].[FK_UsuarioMensagem]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Mensagens] DROP CONSTRAINT [FK_UsuarioMensagem];
+GO
+IF OBJECT_ID(N'[dbo].[FK_UsuarioMensagem1]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Mensagens] DROP CONSTRAINT [FK_UsuarioMensagem1];
 GO
 
 -- --------------------------------------------------
@@ -93,6 +108,15 @@ IF OBJECT_ID(N'[dbo].[Filmes]', 'U') IS NOT NULL
 GO
 IF OBJECT_ID(N'[dbo].[Papeis]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Papeis];
+GO
+IF OBJECT_ID(N'[dbo].[PackFilmes]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[PackFilmes];
+GO
+IF OBJECT_ID(N'[dbo].[Comentarios]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Comentarios];
+GO
+IF OBJECT_ID(N'[dbo].[Mensagens]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Mensagens];
 GO
 
 -- --------------------------------------------------
@@ -245,7 +269,9 @@ CREATE TABLE [dbo].[Filmes] (
     [URLPoster] nvarchar(max)  NOT NULL,
     [Generos] nvarchar(max)  NOT NULL,
     [TrailerYoutube] nvarchar(max)  NOT NULL,
-    [ScreenShots] nvarchar(max)  NOT NULL
+    [ScreenShots] nvarchar(max)  NOT NULL,
+    [Duracao] nvarchar(max)  NOT NULL,
+    [PackFilme_IdPack] int  NULL
 );
 GO
 
@@ -255,6 +281,33 @@ CREATE TABLE [dbo].[Papeis] (
     [NomePersonagem] nvarchar(max)  NOT NULL,
     [Filme_IdFilme] int  NOT NULL,
     [Ator_IdAtor] int  NOT NULL
+);
+GO
+
+-- Creating table 'PackFilmes'
+CREATE TABLE [dbo].[PackFilmes] (
+    [IdPack] int IDENTITY(1,1) NOT NULL,
+    [NomePack] nvarchar(max)  NOT NULL
+);
+GO
+
+-- Creating table 'Comentarios'
+CREATE TABLE [dbo].[Comentarios] (
+    [IdComentario] int IDENTITY(1,1) NOT NULL,
+    [TextoComentario] nvarchar(max)  NOT NULL,
+    [Torrent_IdTorrent] int  NOT NULL,
+    [Usuario_IdUsuario] int  NOT NULL
+);
+GO
+
+-- Creating table 'Mensagens'
+CREATE TABLE [dbo].[Mensagens] (
+    [IdMensagem] int IDENTITY(1,1) NOT NULL,
+    [AssuntoMensagem] nvarchar(max)  NOT NULL,
+    [TextoMensagem] nvarchar(max)  NOT NULL,
+    [Lida] bit  NOT NULL,
+    [UsuarioDe_IdUsuario] int  NOT NULL,
+    [UsuarioPara_IdUsuario] int  NOT NULL
 );
 GO
 
@@ -338,6 +391,24 @@ GO
 ALTER TABLE [dbo].[Papeis]
 ADD CONSTRAINT [PK_Papeis]
     PRIMARY KEY CLUSTERED ([IdPapel] ASC);
+GO
+
+-- Creating primary key on [IdPack] in table 'PackFilmes'
+ALTER TABLE [dbo].[PackFilmes]
+ADD CONSTRAINT [PK_PackFilmes]
+    PRIMARY KEY CLUSTERED ([IdPack] ASC);
+GO
+
+-- Creating primary key on [IdComentario] in table 'Comentarios'
+ALTER TABLE [dbo].[Comentarios]
+ADD CONSTRAINT [PK_Comentarios]
+    PRIMARY KEY CLUSTERED ([IdComentario] ASC);
+GO
+
+-- Creating primary key on [IdMensagem] in table 'Mensagens'
+ALTER TABLE [dbo].[Mensagens]
+ADD CONSTRAINT [PK_Mensagens]
+    PRIMARY KEY CLUSTERED ([IdMensagem] ASC);
 GO
 
 -- --------------------------------------------------
@@ -496,6 +567,76 @@ ADD CONSTRAINT [FK_FilmeLegenda]
 CREATE INDEX [IX_FK_FilmeLegenda]
 ON [dbo].[Legendas]
     ([Filme_IdFilme]);
+GO
+
+-- Creating foreign key on [PackFilme_IdPack] in table 'Filmes'
+ALTER TABLE [dbo].[Filmes]
+ADD CONSTRAINT [FK_PackFilmeFilme]
+    FOREIGN KEY ([PackFilme_IdPack])
+    REFERENCES [dbo].[PackFilmes]
+        ([IdPack])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_PackFilmeFilme'
+CREATE INDEX [IX_FK_PackFilmeFilme]
+ON [dbo].[Filmes]
+    ([PackFilme_IdPack]);
+GO
+
+-- Creating foreign key on [Torrent_IdTorrent] in table 'Comentarios'
+ALTER TABLE [dbo].[Comentarios]
+ADD CONSTRAINT [FK_TorrentComentario]
+    FOREIGN KEY ([Torrent_IdTorrent])
+    REFERENCES [dbo].[Torrents]
+        ([IdTorrent])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_TorrentComentario'
+CREATE INDEX [IX_FK_TorrentComentario]
+ON [dbo].[Comentarios]
+    ([Torrent_IdTorrent]);
+GO
+
+-- Creating foreign key on [Usuario_IdUsuario] in table 'Comentarios'
+ALTER TABLE [dbo].[Comentarios]
+ADD CONSTRAINT [FK_UsuarioComentario]
+    FOREIGN KEY ([Usuario_IdUsuario])
+    REFERENCES [dbo].[Usuarios]
+        ([IdUsuario])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_UsuarioComentario'
+CREATE INDEX [IX_FK_UsuarioComentario]
+ON [dbo].[Comentarios]
+    ([Usuario_IdUsuario]);
+GO
+
+-- Creating foreign key on [UsuarioDe_IdUsuario] in table 'Mensagens'
+ALTER TABLE [dbo].[Mensagens]
+ADD CONSTRAINT [FK_UsuarioMensagem]
+    FOREIGN KEY ([UsuarioDe_IdUsuario])
+    REFERENCES [dbo].[Usuarios]
+        ([IdUsuario])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_UsuarioMensagem'
+CREATE INDEX [IX_FK_UsuarioMensagem]
+ON [dbo].[Mensagens]
+    ([UsuarioDe_IdUsuario]);
+GO
+
+-- Creating foreign key on [UsuarioPara_IdUsuario] in table 'Mensagens'
+ALTER TABLE [dbo].[Mensagens]
+ADD CONSTRAINT [FK_UsuarioMensagem1]
+    FOREIGN KEY ([UsuarioPara_IdUsuario])
+    REFERENCES [dbo].[Usuarios]
+        ([IdUsuario])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_UsuarioMensagem1'
+CREATE INDEX [IX_FK_UsuarioMensagem1]
+ON [dbo].[Mensagens]
+    ([UsuarioPara_IdUsuario]);
 GO
 
 -- --------------------------------------------------

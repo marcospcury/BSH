@@ -78,6 +78,12 @@ namespace BitShareData
             get;
             set;
         }
+    
+        public virtual string Duracao
+        {
+            get;
+            set;
+        }
 
         #endregion
 
@@ -178,10 +184,41 @@ namespace BitShareData
             }
         }
         private ICollection<Legenda> _legendas;
+    
+        public virtual PackFilme PackFilme
+        {
+            get { return _packFilme; }
+            set
+            {
+                if (!ReferenceEquals(_packFilme, value))
+                {
+                    var previousValue = _packFilme;
+                    _packFilme = value;
+                    FixupPackFilme(previousValue);
+                }
+            }
+        }
+        private PackFilme _packFilme;
 
         #endregion
 
         #region Association Fixup
+    
+        private void FixupPackFilme(PackFilme previousValue)
+        {
+            if (previousValue != null && previousValue.Filmes.Contains(this))
+            {
+                previousValue.Filmes.Remove(this);
+            }
+    
+            if (PackFilme != null)
+            {
+                if (!PackFilme.Filmes.Contains(this))
+                {
+                    PackFilme.Filmes.Add(this);
+                }
+            }
+        }
     
         private void FixupPapels(object sender, NotifyCollectionChangedEventArgs e)
         {

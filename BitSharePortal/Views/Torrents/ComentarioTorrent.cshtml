@@ -1,0 +1,252 @@
+﻿@model BitShareData.Torrent
+
+<script>
+    $(function () {
+        function Trim(str) { return str.replace(/^\s+|\s+$/g, ""); }
+
+        $("#botaoEnviarComentario").button();
+        $("#commentContainer").hide();
+        $("#textContainer").show();
+        $("#textContainer").focus();
+
+        $(".emoticon").mousedown(function () {
+            $("#textContainer").val($("#textContainer").val() + " " + dictSmile[$(this).attr("param")].text + " ");
+
+            var textoComment = $("#textContainer").val();
+            for (var i = 0; i < dictSmile.length; i++) {
+                textoComment = replaceAll(textoComment, dictSmile[i].text, dictSmile[i].image);
+            }
+
+            textoComment = replaceAll(textoComment, "\n", "<br>");
+
+            $("#commentContainer").html(textoComment);
+            e.stopPropagation();
+            e.preventDefault();
+            return false;
+        });
+
+        $("#botaoEnviarComentario").mousedown(function (e) {
+            if (Trim($("#textContainer").val()) == "") {
+                alert("É necessário preencher o comentário");
+            }
+            else {
+                Carregando("Enviando comentário");
+                $("#Comentario").val($("#commentContainer").html());
+                $("#dialogComment").dialog("close");
+                $("#postComment").submit();
+            }
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+        var dictSmile = [
+            { text: ":-)", image: "<img src='../../Content/emoticons/smile1.gif'>" },
+            { text: ":smile:", image: "<img src='../../Content/emoticons/smile2.gif'>" },
+            { text: ":-D", image: "<img src='../../Content/emoticons/grin.gif'>" },
+            { text: ":w00t:", image: "<img src='../../Content/emoticons/w00t.gif'>" },
+            { text: ":-P", image: "<img src='../../Content/emoticons/tongue.gif'>" },
+            { text: ";-)", image: "<img src='../../Content/emoticons/wink.gif'>" },
+            { text: ":-|", image: "<img src='../../Content/emoticons/noexpression.gif'>" },
+            { text: ":-/", image: "<img src='../../Content/emoticons/confused.gif'>" },
+            { text: ":-(", image: "<img src='../../Content/emoticons/sad.gif'>" },
+            { text: ":'-(", image: "<img src='../../Content/emoticons/cry.gif'>" },
+            { text: ":-O", image: "<img src='../../Content/emoticons/ohmy.gif'>" },
+            { text: "|-)", image: "<img src='../../Content/emoticons/sleeping.gif'>" },
+            { text: ":innocent:", image: "<img src='../../Content/emoticons/innocent.gif'>" },
+            { text: ":unsure:", image: "<img src='../../Content/emoticons/unsure.gif'>" },
+            { text: ":closedeyes:", image: "<img src='../../Content/emoticons/closedeyes.gif'>" },
+            { text: ":cool:", image: "<img src='../../Content/emoticons/cool2.gif'>" },
+            { text: ":thumbsdown:", image: "<img src='../../Content/emoticons/thumbsdown.gif'>" },
+            { text: ":blush:", image: "<img src='../../Content/emoticons/blush.gif'>" },
+            { text: ":yes:", image: "<img src='../../Content/emoticons/yes.gif'>" },
+            { text: ":no:", image: "<img src='../../Content/emoticons/no.gif'>" },
+            { text: ":love:", image: "<img src='../../Content/emoticons/love.gif'>" },
+            { text: ":?:", image: "<img src='../../Content/emoticons/question.gif'>" },
+            { text: ":!:", image: "<img src='../../Content/emoticons/excl.gif'>" },
+            { text: ":idea:", image: "<img src='../../Content/emoticons/idea.gif'>" },
+            { text: ":arrow:", image: "<img src='../../Content/emoticons/arrow.gif'>" },
+            { text: ":arrow2:", image: "<img src='../../Content/emoticons/arrow2.gif'>" },
+            { text: ":hmm:", image: "<img src='../../Content/emoticons/hmm.gif'>" },
+            { text: ":hmmm:", image: "<img src='../../Content/emoticons/hmmm.gif'>" },
+            { text: ":huh:", image: "<img src='../../Content/emoticons/huh.gif'>" },
+            { text: ":rolleyes:", image: "<img src='../../Content/emoticons/rolleyes.gif'>" },
+            { text: ":kiss:", image: "<img src='../../Content/emoticons/kiss.gif'>" },
+            { text: ":shifty:", image: "<img src='../../Content/emoticons/shifty.gif'>" }
+        ];
+
+
+        function replaceAll(string, token, newtoken) {
+            while (string.indexOf(token) != -1) {
+                string = string.replace(token, newtoken);
+            }
+            return string;
+        }
+
+        function setHtml() {
+            var textoComment = $("#textContainer").val();
+            for (var i = 0; i < dictSmile.length; i++) {
+                textoComment = replaceAll(textoComment, dictSmile[i].text, dictSmile[i].image);
+            }
+
+            textoComment = replaceAll(textoComment, "\n", "<br>");
+
+            $("#commentContainer").html(textoComment);
+            $("#commentContainer").show();
+            $("#textContainer").hide();
+        }
+
+        $("#commentContainer").click(function () {
+            $("#textContainer").show();
+            $("#textContainer").focus();
+            $(this).hide();
+        });
+
+        $("#textContainer").blur(function () {
+            setHtml();
+        });
+    });
+
+</script>
+<style>
+    table, td, tr {
+        padding: 2px;
+    }
+
+    #botaoEnviarComentario, #textContainer, #commentContainer {
+        font: 98% "Trebuchet MS", sans-serif;
+    }
+
+    #commentContainer {
+        margin-bottom: 5px;
+    }
+</style>
+<table>
+    <tr>
+        <td valign="top">
+            @using (Html.BeginForm("PostComment", "Torrents", FormMethod.Post, new { id = "postComment" }))
+            {
+                <input type="hidden" name="IdTorrent" value="@Model.IdTorrent"/>
+                <input type="hidden" name="Comentario" id="Comentario"/>
+                <div id="commentContainer" style="width: 604px; height: 204px; border: solid; border-width: thin; border-color: silver;"></div>
+                <textarea id="textContainer" name="textContainer" style="width: 600px; height: 200px;"></textarea>
+                <center><button id="botaoEnviarComentario">Enviar Comentário</button></center>
+             }
+        </td>
+        <td>
+            <table id="tbEmoticons">
+                <tr>
+                    <td>
+                        <img id="img1" class="emoticon" src='../../Content/emoticons/smile1.gif' param="0">
+                    </td>
+                    <td>
+                        <img id="img2" class="emoticon" src='../../Content/emoticons/smile2.gif' param="1">
+                    </td>
+                    <td>
+                        <img id="img3" class="emoticon" src='../../Content/emoticons/grin.gif' param="2">
+                    </td>
+                    <td>
+                        <img id="img4" class="emoticon" src='../../Content/emoticons/w00t.gif' param="3">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <img id="img5" class="emoticon" src='../../Content/emoticons/tongue.gif' param="4">
+                    </td>
+                    <td>
+                        <img id="img6" class="emoticon" src='../../Content/emoticons/wink.gif' param="5">
+                    </td>
+                    <td>
+                        <img id="img7" class="emoticon" src='../../Content/emoticons/noexpression.gif' param="6">
+                    </td>
+                    <td>
+                        <img id="img8" class="emoticon" src='../../Content/emoticons/confused.gif' param="7">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <img id="img9" class="emoticon" src='../../Content/emoticons/sad.gif' param="8">
+                    </td>
+                    <td>
+                        <img id="img10" class="emoticon" src='../../Content/emoticons/cry.gif' param="9">
+                    </td>
+                    <td>
+                        <img id="img11" class="emoticon" src='../../Content/emoticons/ohmy.gif' param="10">
+                    </td>
+                    <td>
+                        <img id="img12" class="emoticon" src='../../Content/emoticons/sleeping.gif' param="11">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <img id="img13" class="emoticon" src='../../Content/emoticons/innocent.gif' param="12">
+                    </td>
+                    <td>
+                        <img cid="img14" lass="emoticon" src='../../Content/emoticons/unsure.gif' param="13">
+                    </td>
+                    <td>
+                        <img id="img15" class="emoticon" src='../../Content/emoticons/closedeyes.gif' param="14">
+                    </td>
+                    <td>
+                        <img id="img16" class="emoticon" src='../../Content/emoticons/cool2.gif' param="15">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <img id="img17" class="emoticon" src='../../Content/emoticons/thumbsdown.gif' param="16">
+                    </td>
+                    <td>
+                        <img id="img18" class="emoticon" src='../../Content/emoticons/blush.gif' param="17">
+                    </td>
+                    <td>
+                        <img id="img19" class="emoticon" src='../../Content/emoticons/yes.gif' param="18">
+                    </td>
+                    <td>
+                        <img id="img20" class="emoticon" src='../../Content/emoticons/no.gif' param="19">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <img id="img21" class="emoticon" src='../../Content/emoticons/love.gif' param="20">
+                    </td>
+                    <td>
+                        <img id="img22" class="emoticon" src='../../Content/emoticons/question.gif' param="21">
+                    </td>
+                    <td>
+                        <img id="img23" class="emoticon" src='../../Content/emoticons/excl.gif' param="22">
+                    </td>
+                    <td>
+                        <img id="img24" class="emoticon" src='../../Content/emoticons/idea.gif' param="23">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <img id="img25" class="emoticon" src='../../Content/emoticons/arrow.gif' param="24">
+                    </td>
+                    <td>
+                        <img id="img26" class="emoticon" src='../../Content/emoticons/arrow2.gif' param="25">
+                    </td>
+                    <td>
+                        <img id="img27" class="emoticon" src='../../Content/emoticons/hmm.gif' param="26">
+                    </td>
+                    <td>
+                        <img id="img28" class="emoticon" src='../../Content/emoticons/hmmm.gif' param="27">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <img id="img29" class="emoticon" src='../../Content/emoticons/huh.gif' param="28">
+                    </td>
+                    <td>
+                        <img id="img30" class="emoticon" src='../../Content/emoticons/rolleyes.gif' param="29">
+                    </td>
+                    <td>
+                        <img id="img31" class="emoticon" src='../../Content/emoticons/kiss.gif' param="30">
+                    </td>
+                    <td>
+                        <img id="img32" class="emoticon" src='../../Content/emoticons/shifty.gif' param="31">
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>

@@ -1,4 +1,5 @@
 ﻿using BitShareData;
+using BitSharePortal.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,37 +15,7 @@ namespace BitSharePortal.Models
         {
             get
             {
-                double tamanhoCalculado = Tamanho;
-                string retorno = "";
-                string sufixo = " B";
-
-                if (Tamanho.ToString().Length > 3)
-                {
-                    tamanhoCalculado = tamanhoCalculado / 1024;
-                    sufixo = " KB";
-                }
-
-                if (Tamanho.ToString().Length > 6)
-                {
-                    tamanhoCalculado = tamanhoCalculado / 1024;
-                    sufixo = " MB";
-                }
-
-                if (Tamanho.ToString().Length > 9)
-                {
-                    tamanhoCalculado = tamanhoCalculado / 1024;
-                    sufixo = " GB";
-                }
-
-                if (Tamanho.ToString().Length > 12)
-                {
-                    tamanhoCalculado = tamanhoCalculado / 1024;
-                    sufixo = " TB";
-                }
-
-                retorno = tamanhoCalculado.ToString("0.00") + sufixo;
-
-                return retorno;
+                return TorrentServices.TamanhoFormat(Tamanho);
             }
         }
         public DateTime DataLancamento { get; set; }
@@ -52,5 +23,7 @@ namespace BitSharePortal.Models
         public int Seeds { get; set; }
         public int Leechers { get; set; }
         public string UsuarioLancamento { get; set; }
+
+        public string RelevanciaResultado { get; set; }
     }
 }
